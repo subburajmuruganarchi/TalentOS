@@ -15,9 +15,7 @@ import {
 } from '../domain/enums/job-description-source.enum';
 import { JobStatus } from '../domain/enums/job-status.enum';
 import type { JobDescriptionAiProcessor } from '../domain/interfaces/job-description-ai-processor.interface';
-import {
-  JOB_DESCRIPTION_AI_PROCESSOR,
-} from '../domain/interfaces/job-description-ai-processor.interface';
+import { JOB_DESCRIPTION_AI_PROCESSOR } from '../domain/interfaces/job-description-ai-processor.interface';
 import { DocumentRepository } from '../infrastructure/persistence/repositories/document.repository';
 import { JobDescriptionRepository } from '../infrastructure/persistence/repositories/job-description.repository';
 import { JobRepository } from '../infrastructure/persistence/repositories/job.repository';
@@ -118,10 +116,17 @@ export class JobsService {
     const organizationId = this.requireOrganizationId(user);
     await this.findJobOrThrow(organizationId, jobId);
     this.validateUploadedFile(file);
+    const mimeType = file.mimetype as JobDescriptionMimeType;
 
     const actorId = new Types.ObjectId(user.userId);
-    const version = await this.jobDescriptionRepository.getNextVersion(organizationId, jobId);
-    await this.jobDescriptionRepository.deactivateActiveVersions(organizationId, jobId);
+    const version = await this.jobDescriptionRepository.getNextVersion(
+      organizationId,
+      jobId,
+    );
+    await this.jobDescriptionRepository.deactivateActiveVersions(
+      organizationId,
+      jobId,
+    );
 
     const jobDescription = await this.jobDescriptionRepository.create({
       organizationId: new Types.ObjectId(organizationId),
@@ -176,7 +181,7 @@ export class JobsService {
     let rawText: string | null = null;
     let processingJobId: string | null = null;
 
-    if (file.mimetype === JobDescriptionMimeType.TXT) {
+    if (mimeType === JobDescriptionMimeType.TXT) {
       rawText = file.buffer.toString('utf-8');
       extractionStatus = ExtractionStatus.READY_FOR_REVIEW;
     } else {
@@ -190,25 +195,26 @@ export class JobsService {
       processingJobId = queued.processingJobId;
     }
 
-    const updatedJobDescription = await this.jobDescriptionRepository.updateExtraction(
-      organizationId,
-      jobDescription._id.toString(),
-      {
-        status: extractionStatus,
-        processingJobId,
-      },
-      {
-        rawText,
-        source: {
-          type: JobDescriptionSourceType.UPLOAD,
-          documentId: document._id,
-          linkedinUrl: null,
-          originalFilename: file.originalname,
-          mimeType: file.mimetype,
+    const updatedJobDescription =
+      await this.jobDescriptionRepository.updateExtraction(
+        organizationId,
+        jobDescription._id.toString(),
+        {
+          status: extractionStatus,
+          processingJobId,
         },
-        updatedBy: actorId,
-      },
-    );
+        {
+          rawText,
+          source: {
+            type: JobDescriptionSourceType.UPLOAD,
+            documentId: document._id,
+            linkedinUrl: null,
+            originalFilename: file.originalname,
+            mimeType: file.mimetype,
+          },
+          updatedBy: actorId,
+        },
+      );
 
     await this.jobRepository.setCurrentJobDescription(
       organizationId,
@@ -229,8 +235,14 @@ export class JobsService {
     await this.findJobOrThrow(organizationId, jobId);
 
     const actorId = new Types.ObjectId(user.userId);
-    const version = await this.jobDescriptionRepository.getNextVersion(organizationId, jobId);
-    await this.jobDescriptionRepository.deactivateActiveVersions(organizationId, jobId);
+    const version = await this.jobDescriptionRepository.getNextVersion(
+      organizationId,
+      jobId,
+    );
+    await this.jobDescriptionRepository.deactivateActiveVersions(
+      organizationId,
+      jobId,
+    );
 
     const jobDescription = await this.jobDescriptionRepository.create({
       organizationId: new Types.ObjectId(organizationId),
@@ -266,11 +278,12 @@ export class JobsService {
       linkedinUrl: dto.linkedinUrl,
     });
 
-    const updatedJobDescription = await this.jobDescriptionRepository.updateExtraction(
-      organizationId,
-      jobDescription._id.toString(),
-      { processingJobId: queued.processingJobId },
-    );
+    const updatedJobDescription =
+      await this.jobDescriptionRepository.updateExtraction(
+        organizationId,
+        jobDescription._id.toString(),
+        { processingJobId: queued.processingJobId },
+      );
 
     await this.jobRepository.setCurrentJobDescription(
       organizationId,
@@ -279,7 +292,9 @@ export class JobsService {
       actorId,
     );
 
-    return this.toJobDescriptionResponse(updatedJobDescription ?? jobDescription);
+    return this.toJobDescriptionResponse(
+      updatedJobDescription ?? jobDescription,
+    );
   }
 
   async getCurrentJobDescription(user: AuthenticatedUser, jobId: string) {
@@ -302,7 +317,10 @@ export class JobsService {
     const organizationId = this.requireOrganizationId(user);
     await this.findJobOrThrow(organizationId, jobId);
 
-    const versions = await this.jobDescriptionRepository.findAllByJob(organizationId, jobId);
+    const versions = await this.jobDescriptionRepository.findAllByJob(
+      organizationId,
+      jobId,
+    );
     return versions.map((item) => this.toJobDescriptionResponse(item));
   }
 
@@ -315,7 +333,11 @@ export class JobsService {
       throw new BadRequestException('File exceeds maximum size of 10MB');
     }
 
-    if (!ALLOWED_JOB_DESCRIPTION_MIME_TYPES.includes(file.mimetype as JobDescriptionMimeType)) {
+    if (
+      !ALLOWED_JOB_DESCRIPTION_MIME_TYPES.includes(
+        file.mimetype as JobDescriptionMimeType,
+      )
+    ) {
       throw new BadRequestException(
         'Unsupported file type. Allowed: PDF, DOC, DOCX, TXT',
       );
@@ -368,7 +390,9 @@ export class JobsService {
   }
 
   private toJobDescriptionResponse(
-    jobDescription: NonNullable<Awaited<ReturnType<JobDescriptionRepository['findById']>>>,
+    jobDescription: NonNullable<
+      Awaited<ReturnType<JobDescriptionRepository['findById']>>
+    >,
   ) {
     return {
       id: jobDescription._id.toString(),
@@ -387,7 +411,8 @@ export class JobsService {
       extraction: {
         status: jobDescription.extraction.status,
         processingJobId: jobDescription.extraction.processingJobId,
-        aiAnalysisId: jobDescription.extraction.aiAnalysisId?.toString() ?? null,
+        aiAnalysisId:
+          jobDescription.extraction.aiAnalysisId?.toString() ?? null,
         error: jobDescription.extraction.error,
         reviewedAt: jobDescription.extraction.reviewedAt,
         reviewedBy: jobDescription.extraction.reviewedBy?.toString() ?? null,

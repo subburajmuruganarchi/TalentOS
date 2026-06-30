@@ -31,7 +31,10 @@ export class ResumeFileStorage {
   }
 
   async save(input: ResumeStorageInput): Promise<ResumeStorageResult> {
-    const safeFilename = input.originalFilename.replace(/[^a-zA-Z0-9._-]/g, '_');
+    const safeFilename = input.originalFilename.replace(
+      /[^a-zA-Z0-9._-]/g,
+      '_',
+    );
     const relativePath = join(
       input.organizationId,
       'candidates',

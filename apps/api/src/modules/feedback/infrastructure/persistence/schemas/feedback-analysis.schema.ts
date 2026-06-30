@@ -10,7 +10,11 @@ export class FeedbackInputSnapshot {
   @Prop({ type: String, required: true })
   interviewerFeedback!: string;
 
-  @Prop({ type: String, enum: Object.values(InterviewerRecommendation), default: null })
+  @Prop({
+    type: String,
+    enum: Object.values(InterviewerRecommendation),
+    default: null,
+  })
   interviewerRecommendation!: InterviewerRecommendation | null;
 
   @Prop({ type: String, required: true })
@@ -34,7 +38,11 @@ export class FeedbackAnalysisData {
   @Prop({ type: [String], default: [] })
   weaknesses!: string[];
 
-  @Prop({ type: String, required: true, enum: Object.values(FeedbackHiringRecommendation) })
+  @Prop({
+    type: String,
+    required: true,
+    enum: Object.values(FeedbackHiringRecommendation),
+  })
   hiringRecommendation!: FeedbackHiringRecommendation;
 
   @Prop({ type: String, required: true })
@@ -86,14 +94,22 @@ export class FeedbackAnalysis {
   updatedAt?: Date;
 }
 
-export const FeedbackAnalysisSchema = SchemaFactory.createForClass(FeedbackAnalysis);
+export const FeedbackAnalysisSchema =
+  SchemaFactory.createForClass(FeedbackAnalysis);
 
-FeedbackAnalysisSchema.index(
-  { organizationId: 1, interviewId: 1, isDeleted: 1, createdAt: -1 },
-);
-FeedbackAnalysisSchema.index(
-  { organizationId: 1, jobId: 1, candidateId: 1, isDeleted: 1, createdAt: -1 },
-);
+FeedbackAnalysisSchema.index({
+  organizationId: 1,
+  interviewId: 1,
+  isDeleted: 1,
+  createdAt: -1,
+});
+FeedbackAnalysisSchema.index({
+  organizationId: 1,
+  jobId: 1,
+  candidateId: 1,
+  isDeleted: 1,
+  createdAt: -1,
+});
 FeedbackAnalysisSchema.index(
   { organizationId: 1, interviewId: 1 },
   { unique: true, partialFilterExpression: { isDeleted: false } },

@@ -1,12 +1,15 @@
 import { Injectable, ServiceUnavailableException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as nodemailer from 'nodemailer';
-import type { Transporter } from 'nodemailer';
+import nodemailer, { type Transporter } from 'nodemailer';
 import {
   EmailSender,
   SendEmailInput,
   SendEmailResult,
 } from './email-sender.interface';
+
+interface SendMailResult {
+  messageId?: string;
+}
 
 @Injectable()
 export class SmtpEmailSender implements EmailSender {
@@ -25,17 +28,16 @@ export class SmtpEmailSender implements EmailSender {
     }
 
     const transporter = this.getTransporter();
-    const info = await transporter.sendMail({
+    const info = (await transporter.sendMail({
       from,
       to: input.toName ? `"${input.toName}" <${input.to}>` : input.to,
       subject: input.subject,
       text: input.body,
       html: input.bodyHtml ?? undefined,
-    });
+    })) as SendMailResult;
 
     return { messageId: info.messageId ?? `smtp-${Date.now()}` };
   }
-
   private getTransporter(): Transporter {
     if (this.transporter) {
       return this.transporter;

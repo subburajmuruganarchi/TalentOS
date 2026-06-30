@@ -13,7 +13,10 @@ import { AiFeedbackClient } from '../infrastructure/ai/ai-feedback.client';
 import { FeedbackAnalysisRepository } from '../infrastructure/persistence/repositories/feedback-analysis.repository';
 import { FeedbackContextRepository } from '../infrastructure/persistence/repositories/feedback-context.repository';
 import { FeedbackAnalysisDocument } from '../infrastructure/persistence/schemas/feedback-analysis.schema';
-import { AnalyzeFeedbackDto, ListFeedbackAnalysesQueryDto } from '../presentation/dto/feedback.dto';
+import {
+  AnalyzeFeedbackDto,
+  ListFeedbackAnalysesQueryDto,
+} from '../presentation/dto/feedback.dto';
 
 @Injectable()
 export class FeedbackAnalysisService {
@@ -30,7 +33,10 @@ export class FeedbackAnalysisService {
   ) {
     this.assertCanAnalyze(user);
     const organizationId = this.requireOrganizationId(user);
-    const context = await this.feedbackContextRepository.load(organizationId, interviewId);
+    const context = await this.feedbackContextRepository.load(
+      organizationId,
+      interviewId,
+    );
 
     const transcript =
       context.interview.processedTranscript?.cleanedText ??
@@ -42,13 +48,19 @@ export class FeedbackAnalysisService {
       );
     }
 
-    const interviewerFeedback = this.buildInterviewerFeedback(context, dto.additionalFeedback);
-    const candidateProfilePayload = this.buildCandidateProfilePayload(context.candidate);
+    const interviewerFeedback = this.buildInterviewerFeedback(
+      context,
+      dto.additionalFeedback,
+    );
+    const candidateProfilePayload = this.buildCandidateProfilePayload(
+      context.candidate,
+    );
 
     const aiResult = await this.aiFeedbackClient.analyze({
       job_title: context.job.title,
       interviewer_feedback: interviewerFeedback,
-      interviewer_recommendation: context.interview.interviewerDecision.recommendation,
+      interviewer_recommendation:
+        context.interview.interviewerDecision.recommendation,
       transcript,
       candidate_profile: candidateProfilePayload,
     });
@@ -64,7 +76,8 @@ export class FeedbackAnalysisService {
         interviewId: context.interview._id,
         input: {
           interviewerFeedback,
-          interviewerRecommendation: context.interview.interviewerDecision.recommendation,
+          interviewerRecommendation:
+            context.interview.interviewerDecision.recommendation,
           transcript,
           candidateProfile: candidateProfilePayload,
         },
@@ -89,13 +102,16 @@ export class FeedbackAnalysisService {
 
   async getByInterview(user: AuthenticatedUser, interviewId: string) {
     const organizationId = this.requireOrganizationId(user);
-    const analysis = await this.feedbackAnalysisRepository.findLatestByInterview(
-      organizationId,
-      interviewId,
-    );
+    const analysis =
+      await this.feedbackAnalysisRepository.findLatestByInterview(
+        organizationId,
+        interviewId,
+      );
 
     if (!analysis) {
-      throw new NotFoundException('No feedback analysis found for this interview');
+      throw new NotFoundException(
+        'No feedback analysis found for this interview',
+      );
     }
 
     return this.toResponse(analysis);
@@ -103,7 +119,10 @@ export class FeedbackAnalysisService {
 
   async getById(user: AuthenticatedUser, id: string) {
     const organizationId = this.requireOrganizationId(user);
-    const analysis = await this.feedbackAnalysisRepository.findById(organizationId, id);
+    const analysis = await this.feedbackAnalysisRepository.findById(
+      organizationId,
+      id,
+    );
 
     if (!analysis) {
       throw new NotFoundException('Feedback analysis not found');
@@ -157,7 +176,11 @@ export class FeedbackAnalysisService {
     profile: {
       summary?: string | null;
       totalExperienceYears?: number | null;
-      skills: Array<{ name: string; proficiency?: string | null; years?: number | null }>;
+      skills: Array<{
+        name: string;
+        proficiency?: string | null;
+        years?: number | null;
+      }>;
       experience: Array<{
         company: string;
         role: string;
@@ -200,7 +223,9 @@ export class FeedbackAnalysisService {
       !user.permissions.includes(Permission.FEEDBACK_WRITE) &&
       !user.permissions.includes(Permission.INTERVIEWS_WRITE)
     ) {
-      throw new ForbiddenException('Insufficient permissions to run feedback analysis');
+      throw new ForbiddenException(
+        'Insufficient permissions to run feedback analysis',
+      );
     }
   }
 

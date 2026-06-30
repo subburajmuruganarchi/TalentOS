@@ -1,6 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
-import { EmploymentType, JobStatus } from '../../../domain/enums/job-status.enum';
+import {
+  EmploymentType,
+  JobStatus,
+} from '../../../domain/enums/job-status.enum';
 
 export type JobDocument = HydratedDocument<Job>;
 
@@ -12,7 +15,12 @@ export class Job {
   @Prop({ required: true, trim: true })
   title!: string;
 
-  @Prop({ type: String, required: true, enum: Object.values(JobStatus), default: JobStatus.DRAFT })
+  @Prop({
+    type: String,
+    required: true,
+    enum: Object.values(JobStatus),
+    default: JobStatus.DRAFT,
+  })
   status!: JobStatus;
 
   @Prop({ type: Types.ObjectId, default: null })

@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Role } from '../../../domain/enums/role.enum';
-import { OrganizationMember, OrganizationMemberDocument } from '../schemas/organization-member.schema';
+import {
+  OrganizationMember,
+  OrganizationMemberDocument,
+} from '../schemas/organization-member.schema';
 
 @Injectable()
 export class OrganizationMemberRepository {
@@ -11,7 +14,9 @@ export class OrganizationMemberRepository {
     private readonly memberModel: Model<OrganizationMemberDocument>,
   ) {}
 
-  create(data: Partial<OrganizationMember>): Promise<OrganizationMemberDocument> {
+  create(
+    data: Partial<OrganizationMember>,
+  ): Promise<OrganizationMemberDocument> {
     return this.memberModel.create(data);
   }
 
@@ -35,7 +40,10 @@ export class OrganizationMemberRepository {
       .exec();
   }
 
-  findByUserAndRole(userId: string, role: Role): Promise<OrganizationMemberDocument | null> {
+  findByUserAndRole(
+    userId: string,
+    role: Role,
+  ): Promise<OrganizationMemberDocument | null> {
     return this.memberModel
       .findOne({ userId, role, isDeleted: false, status: 'active' })
       .exec();

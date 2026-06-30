@@ -88,7 +88,11 @@ export class Communication {
   @Prop({ type: Types.ObjectId, required: true, index: true })
   candidateId!: Types.ObjectId;
 
-  @Prop({ type: String, required: true, enum: Object.values(CommunicationType) })
+  @Prop({
+    type: String,
+    required: true,
+    enum: Object.values(CommunicationType),
+  })
   type!: CommunicationType;
 
   @Prop({
@@ -147,7 +151,16 @@ export class Communication {
 
 export const CommunicationSchema = SchemaFactory.createForClass(Communication);
 
-CommunicationSchema.index(
-  { organizationId: 1, jobId: 1, candidateId: 1, isDeleted: 1, createdAt: -1 },
-);
-CommunicationSchema.index({ organizationId: 1, status: 1, isDeleted: 1, createdAt: -1 });
+CommunicationSchema.index({
+  organizationId: 1,
+  jobId: 1,
+  candidateId: 1,
+  isDeleted: 1,
+  createdAt: -1,
+});
+CommunicationSchema.index({
+  organizationId: 1,
+  status: 1,
+  isDeleted: 1,
+  createdAt: -1,
+});

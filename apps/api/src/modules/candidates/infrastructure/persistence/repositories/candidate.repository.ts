@@ -6,13 +6,19 @@ import { Candidate, CandidateDocument } from '../schemas/candidate.schema';
 
 @Injectable()
 export class CandidateRepository {
-  constructor(@InjectModel(Candidate.name) private readonly candidateModel: Model<CandidateDocument>) {}
+  constructor(
+    @InjectModel(Candidate.name)
+    private readonly candidateModel: Model<CandidateDocument>,
+  ) {}
 
   create(data: Partial<Candidate>): Promise<CandidateDocument> {
     return this.candidateModel.create(data);
   }
 
-  findById(organizationId: string, candidateId: string): Promise<CandidateDocument | null> {
+  findById(
+    organizationId: string,
+    candidateId: string,
+  ): Promise<CandidateDocument | null> {
     return this.candidateModel
       .findOne({
         _id: new Types.ObjectId(candidateId),

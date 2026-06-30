@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { ExtractionStatus } from '../../../domain/enums/extraction-status.enum';
-import { JobDescription, JobDescriptionDocument } from '../schemas/job-description.schema';
+import {
+  JobDescription,
+  JobDescriptionDocument,
+} from '../schemas/job-description.schema';
 
 @Injectable()
 export class JobDescriptionRepository {
@@ -42,7 +45,10 @@ export class JobDescriptionRepository {
       .exec();
   }
 
-  findAllByJob(organizationId: string, jobId: string): Promise<JobDescriptionDocument[]> {
+  findAllByJob(
+    organizationId: string,
+    jobId: string,
+  ): Promise<JobDescriptionDocument[]> {
     return this.jobDescriptionModel
       .find({
         organizationId: new Types.ObjectId(organizationId),
@@ -64,7 +70,10 @@ export class JobDescriptionRepository {
       .then((latest) => (latest ? latest.version + 1 : 1));
   }
 
-  deactivateActiveVersions(organizationId: string, jobId: string): Promise<void> {
+  deactivateActiveVersions(
+    organizationId: string,
+    jobId: string,
+  ): Promise<void> {
     return this.jobDescriptionModel
       .updateMany(
         {

@@ -10,11 +10,7 @@ import { NextFunction, Request, Response } from 'express';
 import { AuthService } from '../../application/auth.service';
 import { JwtPayload } from '../../domain/interfaces/jwt-payload.interface';
 
-const PUBLIC_PATH_SUFFIXES = [
-  '/health',
-  '/auth/register',
-  '/auth/login',
-];
+const PUBLIC_PATH_SUFFIXES = ['/health', '/auth/register', '/auth/login'];
 
 @Injectable()
 export class PermissionsMiddleware implements NestMiddleware {
@@ -46,7 +42,9 @@ export class PermissionsMiddleware implements NestMiddleware {
       });
 
       const user = this.authService.validatePayload(payload);
-      (req as Request & { user: ReturnType<AuthService['validatePayload']> }).user = user;
+      (
+        req as Request & { user: ReturnType<AuthService['validatePayload']> }
+      ).user = user;
 
       const organizationHeader = req.headers['x-organization-id'];
       if (

@@ -66,7 +66,8 @@ export class CandidateStoredFile {
   updatedAt?: Date;
 }
 
-export const CandidateStoredFileSchema = SchemaFactory.createForClass(CandidateStoredFile);
+export const CandidateStoredFileSchema =
+  SchemaFactory.createForClass(CandidateStoredFile);
 
 CandidateStoredFileSchema.index({
   organizationId: 1,

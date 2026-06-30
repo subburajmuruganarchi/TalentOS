@@ -13,11 +13,16 @@ export class CandidateStoredFileRepository {
     private readonly fileModel: Model<CandidateStoredFileDocument>,
   ) {}
 
-  create(data: Partial<CandidateStoredFile>): Promise<CandidateStoredFileDocument> {
+  create(
+    data: Partial<CandidateStoredFile>,
+  ): Promise<CandidateStoredFileDocument> {
     return this.fileModel.create(data);
   }
 
-  findById(organizationId: string, fileId: string): Promise<CandidateStoredFileDocument | null> {
+  findById(
+    organizationId: string,
+    fileId: string,
+  ): Promise<CandidateStoredFileDocument | null> {
     return this.fileModel
       .findOne({
         _id: new Types.ObjectId(fileId),

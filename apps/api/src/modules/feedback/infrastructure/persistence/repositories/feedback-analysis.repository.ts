@@ -35,7 +35,7 @@ export class FeedbackAnalysisRepository {
         { $set: data },
         { upsert: true, new: true, setDefaultsOnInsert: true },
       )
-      .exec() as Promise<FeedbackAnalysisDocument>;
+      .exec();
   }
 
   findLatestByInterview(
@@ -52,7 +52,10 @@ export class FeedbackAnalysisRepository {
       .exec();
   }
 
-  findById(organizationId: string, id: string): Promise<FeedbackAnalysisDocument | null> {
+  findById(
+    organizationId: string,
+    id: string,
+  ): Promise<FeedbackAnalysisDocument | null> {
     return this.feedbackAnalysisModel
       .findOne({
         _id: new Types.ObjectId(id),
@@ -62,7 +65,9 @@ export class FeedbackAnalysisRepository {
       .exec();
   }
 
-  findAll(filter: ListFeedbackAnalysesFilter): Promise<FeedbackAnalysisDocument[]> {
+  findAll(
+    filter: ListFeedbackAnalysesFilter,
+  ): Promise<FeedbackAnalysisDocument[]> {
     const query: Record<string, unknown> = {
       organizationId: new Types.ObjectId(filter.organizationId),
       isDeleted: false,
@@ -78,6 +83,9 @@ export class FeedbackAnalysisRepository {
       query.interviewId = new Types.ObjectId(filter.interviewId);
     }
 
-    return this.feedbackAnalysisModel.find(query).sort({ createdAt: -1 }).exec();
+    return this.feedbackAnalysisModel
+      .find(query)
+      .sort({ createdAt: -1 })
+      .exec();
   }
 }

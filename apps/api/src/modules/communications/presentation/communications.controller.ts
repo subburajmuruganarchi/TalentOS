@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import type { AuthenticatedUser } from '../../auth/domain/interfaces/authenticated-user.interface';
 import { Permission } from '../../auth/domain/enums/permission.enum';
 import { Role } from '../../auth/domain/enums/role.enum';
@@ -26,12 +34,20 @@ export class CommunicationsController {
     @Param('candidateId') candidateId: string,
     @Body() dto: CreateCommunicationDraftDto,
   ) {
-    return this.communicationsService.generateDraft(user, jobId, candidateId, dto);
+    return this.communicationsService.generateDraft(
+      user,
+      jobId,
+      candidateId,
+      dto,
+    );
   }
 
   @Get('communications')
   @RequirePermissions(Permission.COMMUNICATIONS_READ)
-  list(@CurrentUser() user: AuthenticatedUser, @Query() query: ListCommunicationsQueryDto) {
+  list(
+    @CurrentUser() user: AuthenticatedUser,
+    @Query() query: ListCommunicationsQueryDto,
+  ) {
     return this.communicationsService.list(user, query);
   }
 
@@ -53,7 +69,10 @@ export class CommunicationsController {
 
   @Post('communications/:id/request-approval')
   @RequirePermissions(Permission.COMMUNICATIONS_READ)
-  requestApproval(@CurrentUser() user: AuthenticatedUser, @Param('id') id: string) {
+  requestApproval(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('id') id: string,
+  ) {
     return this.communicationsService.requestApproval(user, id);
   }
 

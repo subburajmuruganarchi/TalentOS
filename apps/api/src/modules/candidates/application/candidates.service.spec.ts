@@ -2,7 +2,10 @@ import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Types } from 'mongoose';
 import { Role } from '../../auth/domain/enums/role.enum';
-import { CandidateSource, CandidateStatus } from '../domain/enums/candidate-status.enum';
+import {
+  CandidateSource,
+  CandidateStatus,
+} from '../domain/enums/candidate-status.enum';
 import { ResumeParseStatus } from '../domain/enums/resume-parse-status.enum';
 import { RESUME_AI_PROCESSOR } from '../domain/interfaces/resume-ai-processor.interface';
 import { CandidateRepository } from '../infrastructure/persistence/repositories/candidate.repository';
@@ -50,7 +53,9 @@ describe('CandidatesService', () => {
   };
 
   const resumeAiProcessor = {
-    queueParsing: jest.fn().mockResolvedValue({ processingJobId: 'resume-job-1' }),
+    queueParsing: jest
+      .fn()
+      .mockResolvedValue({ processingJobId: 'resume-job-1' }),
   };
 
   beforeEach(async () => {
@@ -59,7 +64,10 @@ describe('CandidatesService', () => {
         CandidatesService,
         { provide: CandidateRepository, useValue: candidateRepository },
         { provide: ResumeRepository, useValue: resumeRepository },
-        { provide: CandidateStoredFileRepository, useValue: storedFileRepository },
+        {
+          provide: CandidateStoredFileRepository,
+          useValue: storedFileRepository,
+        },
         { provide: ResumeFileStorage, useValue: resumeFileStorage },
         { provide: RESUME_AI_PROCESSOR, useValue: resumeAiProcessor },
       ],
@@ -94,7 +102,9 @@ describe('CandidatesService', () => {
   });
 
   it('rejects unsupported resume mime types', async () => {
-    candidateRepository.findById.mockResolvedValue({ _id: new Types.ObjectId() });
+    candidateRepository.findById.mockResolvedValue({
+      _id: new Types.ObjectId(),
+    });
 
     await expect(
       service.uploadResumesToCandidate(user, new Types.ObjectId().toString(), [
@@ -149,14 +159,18 @@ describe('CandidatesService', () => {
     candidateRepository.update.mockResolvedValue(undefined);
     candidateRepository.setCurrentResume.mockResolvedValue(undefined);
 
-    const result = await service.uploadResumesToCandidate(user, candidateId.toString(), [
-      {
-        originalname: 'resume.pdf',
-        mimetype: 'application/pdf',
-        size: 4,
-        buffer: Buffer.from('%PDF'),
-      } as Express.Multer.File,
-    ]);
+    const result = await service.uploadResumesToCandidate(
+      user,
+      candidateId.toString(),
+      [
+        {
+          originalname: 'resume.pdf',
+          mimetype: 'application/pdf',
+          size: 4,
+          buffer: Buffer.from('%PDF'),
+        } as Express.Multer.File,
+      ],
+    );
 
     expect(resumeAiProcessor.queueParsing).toHaveBeenCalled();
     expect(result[0].resume.processingJobId).toBe('resume-job-1');

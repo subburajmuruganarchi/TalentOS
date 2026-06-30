@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { CandidateMatch, CandidateMatchDocument } from '../schemas/candidate-match.schema';
+import {
+  CandidateMatch,
+  CandidateMatchDocument,
+} from '../schemas/candidate-match.schema';
 
 @Injectable()
 export class CandidateMatchRepository {
@@ -47,6 +50,6 @@ export class CandidateMatchRepository {
         { $set: data },
         { upsert: true, new: true, setDefaultsOnInsert: true },
       )
-      .exec() as Promise<CandidateMatchDocument>;
+      .exec();
   }
 }

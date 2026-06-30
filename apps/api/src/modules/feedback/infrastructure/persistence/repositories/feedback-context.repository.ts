@@ -9,7 +9,10 @@ import {
   Interview,
   InterviewDocument,
 } from '../../../../interviews/infrastructure/persistence/schemas/interview.schema';
-import { Job, JobDocument } from '../../../../jobs/infrastructure/persistence/schemas/job.schema';
+import {
+  Job,
+  JobDocument,
+} from '../../../../jobs/infrastructure/persistence/schemas/job.schema';
 
 export interface FeedbackAnalysisContext {
   interview: InterviewDocument;
@@ -20,12 +23,17 @@ export interface FeedbackAnalysisContext {
 @Injectable()
 export class FeedbackContextRepository {
   constructor(
-    @InjectModel(Interview.name) private readonly interviewModel: Model<InterviewDocument>,
+    @InjectModel(Interview.name)
+    private readonly interviewModel: Model<InterviewDocument>,
     @InjectModel(Job.name) private readonly jobModel: Model<JobDocument>,
-    @InjectModel(Candidate.name) private readonly candidateModel: Model<CandidateDocument>,
+    @InjectModel(Candidate.name)
+    private readonly candidateModel: Model<CandidateDocument>,
   ) {}
 
-  async load(organizationId: string, interviewId: string): Promise<FeedbackAnalysisContext> {
+  async load(
+    organizationId: string,
+    interviewId: string,
+  ): Promise<FeedbackAnalysisContext> {
     const interview = await this.interviewModel
       .findOne({
         _id: new Types.ObjectId(interviewId),

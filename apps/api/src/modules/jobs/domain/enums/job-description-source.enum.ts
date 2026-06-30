@@ -10,9 +10,14 @@ export enum JobDescriptionMimeType {
   TXT = 'text/plain',
 }
 
-export const ALLOWED_JOB_DESCRIPTION_MIME_TYPES = Object.values(JobDescriptionMimeType);
+export const ALLOWED_JOB_DESCRIPTION_MIME_TYPES = Object.values(
+  JobDescriptionMimeType,
+);
 
-export const JOB_DESCRIPTION_FILE_EXTENSIONS: Record<JobDescriptionMimeType, string> = {
+export const JOB_DESCRIPTION_FILE_EXTENSIONS: Record<
+  JobDescriptionMimeType,
+  string
+> = {
   [JobDescriptionMimeType.PDF]: '.pdf',
   [JobDescriptionMimeType.DOC]: '.doc',
   [JobDescriptionMimeType.DOCX]: '.docx',

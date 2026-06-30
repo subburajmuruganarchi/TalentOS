@@ -5,17 +5,26 @@ import { Resume, ResumeDocument } from '../schemas/resume.schema';
 
 @Injectable()
 export class ResumeRepository {
-  constructor(@InjectModel(Resume.name) private readonly resumeModel: Model<ResumeDocument>) {}
+  constructor(
+    @InjectModel(Resume.name)
+    private readonly resumeModel: Model<ResumeDocument>,
+  ) {}
 
   create(data: Partial<Resume>): Promise<ResumeDocument> {
     return this.resumeModel.create(data);
   }
 
-  createWithId(id: Types.ObjectId, data: Partial<Resume>): Promise<ResumeDocument> {
+  createWithId(
+    id: Types.ObjectId,
+    data: Partial<Resume>,
+  ): Promise<ResumeDocument> {
     return this.resumeModel.create({ ...data, _id: id });
   }
 
-  findById(organizationId: string, resumeId: string): Promise<ResumeDocument | null> {
+  findById(
+    organizationId: string,
+    resumeId: string,
+  ): Promise<ResumeDocument | null> {
     return this.resumeModel
       .findOne({
         _id: new Types.ObjectId(resumeId),
@@ -25,7 +34,10 @@ export class ResumeRepository {
       .exec();
   }
 
-  findByCandidate(organizationId: string, candidateId: string): Promise<ResumeDocument[]> {
+  findByCandidate(
+    organizationId: string,
+    candidateId: string,
+  ): Promise<ResumeDocument[]> {
     return this.resumeModel
       .find({
         organizationId: new Types.ObjectId(organizationId),
@@ -47,7 +59,10 @@ export class ResumeRepository {
       .then((latest) => (latest ? latest.version + 1 : 1));
   }
 
-  deactivatePrimary(organizationId: string, candidateId: string): Promise<void> {
+  deactivatePrimary(
+    organizationId: string,
+    candidateId: string,
+  ): Promise<void> {
     return this.resumeModel
       .updateMany(
         {

@@ -1,6 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
-import { CandidateSource, CandidateStatus } from '../../../domain/enums/candidate-status.enum';
+import {
+  CandidateSource,
+  CandidateStatus,
+} from '../../../domain/enums/candidate-status.enum';
 import { ResumeParseStatus } from '../../../domain/enums/resume-parse-status.enum';
 
 export type CandidateDocument = HydratedDocument<Candidate>;
@@ -150,5 +153,14 @@ CandidateSchema.index(
   { organizationId: 1, email: 1 },
   { unique: true, partialFilterExpression: { isDeleted: false } },
 );
-CandidateSchema.index({ organizationId: 1, isDeleted: 1, status: 1, createdAt: -1 });
-CandidateSchema.index({ organizationId: 1, isDeleted: 1, assignedRecruiterId: 1 });
+CandidateSchema.index({
+  organizationId: 1,
+  isDeleted: 1,
+  status: 1,
+  createdAt: -1,
+});
+CandidateSchema.index({
+  organizationId: 1,
+  isDeleted: 1,
+  assignedRecruiterId: 1,
+});

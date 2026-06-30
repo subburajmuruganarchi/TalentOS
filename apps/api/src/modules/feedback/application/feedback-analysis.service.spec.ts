@@ -27,15 +27,24 @@ describe('FeedbackAnalysisService', () => {
   };
 
   const feedbackContextRepository = { load: jest.fn() };
-  const feedbackAnalysisRepository = { upsertByInterview: jest.fn(), findLatestByInterview: jest.fn() };
+  const feedbackAnalysisRepository = {
+    upsertByInterview: jest.fn(),
+    findLatestByInterview: jest.fn(),
+  };
   const aiFeedbackClient = { analyze: jest.fn() };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         FeedbackAnalysisService,
-        { provide: FeedbackContextRepository, useValue: feedbackContextRepository },
-        { provide: FeedbackAnalysisRepository, useValue: feedbackAnalysisRepository },
+        {
+          provide: FeedbackContextRepository,
+          useValue: feedbackContextRepository,
+        },
+        {
+          provide: FeedbackAnalysisRepository,
+          useValue: feedbackAnalysisRepository,
+        },
         { provide: AiFeedbackClient, useValue: aiFeedbackClient },
       ],
     }).compile();
@@ -60,7 +69,13 @@ describe('FeedbackAnalysisService', () => {
       candidate: {
         fullName: 'Jane Doe',
         email: 'jane@email.com',
-        profile: { skills: [], experience: [], education: [], certifications: [], projects: [] },
+        profile: {
+          skills: [],
+          experience: [],
+          education: [],
+          certifications: [],
+          projects: [],
+        },
       },
       interview: {
         _id: new Types.ObjectId(interviewId),
@@ -108,12 +123,18 @@ describe('FeedbackAnalysisService', () => {
       updatedAt: new Date(),
     });
 
-    const result = await service.analyzeInterviewFeedback(user, interviewId, {});
+    const result = await service.analyzeInterviewFeedback(
+      user,
+      interviewId,
+      {},
+    );
 
     expect(aiFeedbackClient.analyze).toHaveBeenCalled();
     expect(feedbackAnalysisRepository.upsertByInterview).toHaveBeenCalled();
     expect(result.analysis.technicalScore).toBe(85);
-    expect(result.analysis.hiringRecommendation).toBe(FeedbackHiringRecommendation.HIRE);
+    expect(result.analysis.hiringRecommendation).toBe(
+      FeedbackHiringRecommendation.HIRE,
+    );
   });
 
   it('requires transcript before analysis', async () => {
@@ -122,7 +143,13 @@ describe('FeedbackAnalysisService', () => {
       candidate: {
         fullName: 'Jane Doe',
         email: 'jane@email.com',
-        profile: { skills: [], experience: [], education: [], certifications: [], projects: [] },
+        profile: {
+          skills: [],
+          experience: [],
+          education: [],
+          certifications: [],
+          projects: [],
+        },
       },
       interview: {
         _id: new Types.ObjectId(interviewId),
@@ -132,8 +159,8 @@ describe('FeedbackAnalysisService', () => {
       },
     });
 
-    await expect(service.analyzeInterviewFeedback(user, interviewId, {})).rejects.toThrow(
-      BadRequestException,
-    );
+    await expect(
+      service.analyzeInterviewFeedback(user, interviewId, {}),
+    ).rejects.toThrow(BadRequestException);
   });
 });

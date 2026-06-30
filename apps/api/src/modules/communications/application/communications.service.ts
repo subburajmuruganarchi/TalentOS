@@ -127,7 +127,11 @@ export class CommunicationsService {
     return this.toResponse(communication);
   }
 
-  async updateDraft(user: AuthenticatedUser, id: string, dto: UpdateCommunicationDraftDto) {
+  async updateDraft(
+    user: AuthenticatedUser,
+    id: string,
+    dto: UpdateCommunicationDraftDto,
+  ) {
     const communication = await this.findCommunication(user, id);
     this.assertEditable(communication);
 
@@ -156,7 +160,9 @@ export class CommunicationsService {
     const communication = await this.findCommunication(user, id);
 
     if (communication.status !== CommunicationStatus.DRAFT) {
-      throw new BadRequestException('Only draft communications can be submitted for approval');
+      throw new BadRequestException(
+        'Only draft communications can be submitted for approval',
+      );
     }
 
     const actorId = new Types.ObjectId(user.userId);
@@ -181,11 +187,17 @@ export class CommunicationsService {
     return this.toResponse(updated);
   }
 
-  async approve(user: AuthenticatedUser, id: string, dto: ApproveCommunicationDto) {
+  async approve(
+    user: AuthenticatedUser,
+    id: string,
+    dto: ApproveCommunicationDto,
+  ) {
     const communication = await this.findCommunication(user, id);
 
     if (communication.status !== CommunicationStatus.PENDING_APPROVAL) {
-      throw new BadRequestException('Only communications pending approval can be approved');
+      throw new BadRequestException(
+        'Only communications pending approval can be approved',
+      );
     }
 
     const actorId = new Types.ObjectId(user.userId);
@@ -253,13 +265,17 @@ export class CommunicationsService {
       return this.toResponse(updated);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Send failed';
-      await this.communicationRepository.update(this.requireOrganizationId(user), id, {
-        delivery: {
-          ...communication.delivery,
-          error: message,
+      await this.communicationRepository.update(
+        this.requireOrganizationId(user),
+        id,
+        {
+          delivery: {
+            ...communication.delivery,
+            error: message,
+          },
+          updatedBy: actorId,
         },
-        updatedBy: actorId,
-      });
+      );
       throw error;
     }
   }
@@ -290,7 +306,10 @@ export class CommunicationsService {
 
   private async findCommunication(user: AuthenticatedUser, id: string) {
     const organizationId = this.requireOrganizationId(user);
-    const communication = await this.communicationRepository.findById(organizationId, id);
+    const communication = await this.communicationRepository.findById(
+      organizationId,
+      id,
+    );
 
     if (!communication) {
       throw new NotFoundException('Communication not found');

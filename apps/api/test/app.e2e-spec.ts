@@ -33,8 +33,9 @@ describe('AppController (e2e)', () => {
       .get('/api/v1/health')
       .expect(200)
       .expect((res) => {
-        expect(res.body.status).toBe('ok');
-        expect(res.body.service).toBe('TalentOS API');
+        const body = res.body as { status: string; service: string };
+        expect(body.status).toBe('ok');
+        expect(body.service).toBe('TalentOS API');
       });
   });
 });

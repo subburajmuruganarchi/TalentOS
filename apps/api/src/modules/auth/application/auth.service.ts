@@ -54,7 +54,9 @@ export class AuthService {
     }
 
     if (dto.role === Role.SUPER_ADMIN) {
-      throw new BadRequestException('Super Admin accounts cannot be self-registered');
+      throw new BadRequestException(
+        'Super Admin accounts cannot be self-registered',
+      );
     }
 
     const passwordHash = await bcrypt.hash(dto.password, this.saltRounds);
@@ -92,7 +94,9 @@ export class AuthService {
         );
       }
 
-      const organization = await this.organizationRepository.findById(dto.organizationId);
+      const organization = await this.organizationRepository.findById(
+        dto.organizationId,
+      );
       if (!organization) {
         throw new BadRequestException('Organization not found');
       }
@@ -127,12 +131,15 @@ export class AuthService {
       return this.buildAuthResult(user, null, Role.SUPER_ADMIN);
     }
 
-    const memberships = await this.organizationMemberRepository.findActiveByUser(
-      user._id.toString(),
-    );
+    const memberships =
+      await this.organizationMemberRepository.findActiveByUser(
+        user._id.toString(),
+      );
 
     if (memberships.length === 0) {
-      throw new UnauthorizedException('User is not assigned to any organization');
+      throw new UnauthorizedException(
+        'User is not assigned to any organization',
+      );
     }
 
     let membership = memberships[0];
@@ -142,7 +149,9 @@ export class AuthService {
         (item) => item.organizationId.toString() === dto.organizationId,
       );
       if (!selected) {
-        throw new UnauthorizedException('User does not belong to the specified organization');
+        throw new UnauthorizedException(
+          'User does not belong to the specified organization',
+        );
       }
       membership = selected;
     } else if (memberships.length > 1) {
@@ -188,11 +197,18 @@ export class AuthService {
   }
 
   private async buildAuthResult(
-    user: { _id: { toString(): string }; email: string; firstName: string; lastName: string },
+    user: {
+      _id: { toString(): string };
+      email: string;
+      firstName: string;
+      lastName: string;
+    },
     organizationId: string | null,
     role: Role,
   ): Promise<AuthResult> {
-    const permissions = ROLE_PERMISSIONS[role].map((permission) => permission.toString());
+    const permissions = ROLE_PERMISSIONS[role].map((permission) =>
+      permission.toString(),
+    );
     const payload: JwtPayload = {
       sub: user._id.toString(),
       email: user.email,

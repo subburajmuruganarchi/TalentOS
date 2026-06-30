@@ -71,5 +71,10 @@ export class Resume {
 
 export const ResumeSchema = SchemaFactory.createForClass(Resume);
 
-ResumeSchema.index({ organizationId: 1, candidateId: 1, isDeleted: 1, version: -1 });
+ResumeSchema.index({
+  organizationId: 1,
+  candidateId: 1,
+  isDeleted: 1,
+  version: -1,
+});
 ResumeSchema.index({ organizationId: 1, candidateId: 1, isPrimary: 1 });

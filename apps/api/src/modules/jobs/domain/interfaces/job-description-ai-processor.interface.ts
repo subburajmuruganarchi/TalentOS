@@ -14,7 +14,11 @@ export interface JobDescriptionAiQueueResult {
 }
 
 export interface JobDescriptionAiProcessor {
-  queueExtraction(request: JobDescriptionAiQueueRequest): Promise<JobDescriptionAiQueueResult>;
+  queueExtraction(
+    request: JobDescriptionAiQueueRequest,
+  ): Promise<JobDescriptionAiQueueResult>;
 }
 
-export const JOB_DESCRIPTION_AI_PROCESSOR = Symbol('JOB_DESCRIPTION_AI_PROCESSOR');
+export const JOB_DESCRIPTION_AI_PROCESSOR = Symbol(
+  'JOB_DESCRIPTION_AI_PROCESSOR',
+);

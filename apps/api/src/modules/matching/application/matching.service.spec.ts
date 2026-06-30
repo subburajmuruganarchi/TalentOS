@@ -42,7 +42,10 @@ describe('MatchingService', () => {
       providers: [
         MatchingService,
         { provide: MatchContextRepository, useValue: matchContextRepository },
-        { provide: CandidateMatchRepository, useValue: candidateMatchRepository },
+        {
+          provide: CandidateMatchRepository,
+          useValue: candidateMatchRepository,
+        },
         { provide: AiMatchingClient, useValue: aiMatchingClient },
       ],
     }).compile();
@@ -53,7 +56,11 @@ describe('MatchingService', () => {
 
   it('requires organization context', async () => {
     await expect(
-      service.runMatch({ ...user, organizationId: undefined }, jobId, candidateId),
+      service.runMatch(
+        { ...user, organizationId: undefined },
+        jobId,
+        candidateId,
+      ),
     ).rejects.toThrow(ForbiddenException);
   });
 
@@ -160,10 +167,18 @@ describe('MatchingService', () => {
       candidate: {
         fullName: 'Jane Doe',
         email: 'jane@email.com',
-        profile: { skills: [], experience: [], education: [], certifications: [], projects: [] },
+        profile: {
+          skills: [],
+          experience: [],
+          education: [],
+          certifications: [],
+          projects: [],
+        },
       },
     });
 
-    await expect(service.runMatch(user, jobId, candidateId)).rejects.toThrow(BadRequestException);
+    await expect(service.runMatch(user, jobId, candidateId)).rejects.toThrow(
+      BadRequestException,
+    );
   });
 });

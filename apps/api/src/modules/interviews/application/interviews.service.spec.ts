@@ -69,7 +69,10 @@ describe('InterviewsService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         InterviewsService,
-        { provide: InterviewContextRepository, useValue: interviewContextRepository },
+        {
+          provide: InterviewContextRepository,
+          useValue: interviewContextRepository,
+        },
         { provide: InterviewRepository, useValue: interviewRepository },
         { provide: AiInterviewClient, useValue: aiInterviewClient },
       ],
@@ -87,7 +90,13 @@ describe('InterviewsService', () => {
       candidate: {
         fullName: 'Jane Doe',
         email: 'jane@email.com',
-        profile: { skills: [], experience: [], education: [], certifications: [], projects: [] },
+        profile: {
+          skills: [],
+          experience: [],
+          education: [],
+          certifications: [],
+          projects: [],
+        },
       },
     });
     aiInterviewClient.generateQuestions.mockResolvedValue({
@@ -111,10 +120,18 @@ describe('InterviewsService', () => {
     });
     interviewRepository.update.mockResolvedValue({
       ...baseInterview,
-      questionPack: { coding: [{ question: 'Rate limiter' }], technical: [], architecture: [] },
+      questionPack: {
+        coding: [{ question: 'Rate limiter' }],
+        technical: [],
+        architecture: [],
+      },
     });
 
-    const result = await service.generateQuestions(hrUser, interviewId.toString(), {});
+    const result = await service.generateQuestions(
+      hrUser,
+      interviewId.toString(),
+      {},
+    );
 
     expect(aiInterviewClient.generateQuestions).toHaveBeenCalled();
     expect(result.questionPack.coding).toHaveLength(1);
@@ -126,9 +143,9 @@ describe('InterviewsService', () => {
       rawTranscript: null,
     });
 
-    await expect(service.generateSummary(hrUser, interviewId.toString())).rejects.toThrow(
-      BadRequestException,
-    );
+    await expect(
+      service.generateSummary(hrUser, interviewId.toString()),
+    ).rejects.toThrow(BadRequestException);
   });
 
   it('stores interviewer decision separately from AI summary', async () => {
@@ -145,13 +162,19 @@ describe('InterviewsService', () => {
       },
     });
 
-    const result = await service.submitDecision(interviewerUser, interviewId.toString(), {
-      recommendation: InterviewerRecommendation.NO_HIRE,
-      notes: 'Culture fit concerns',
-      overridesAiSummary: true,
-    });
+    const result = await service.submitDecision(
+      interviewerUser,
+      interviewId.toString(),
+      {
+        recommendation: InterviewerRecommendation.NO_HIRE,
+        notes: 'Culture fit concerns',
+        overridesAiSummary: true,
+      },
+    );
 
-    expect(result.interviewerDecision.recommendation).toBe(InterviewerRecommendation.NO_HIRE);
+    expect(result.interviewerDecision.recommendation).toBe(
+      InterviewerRecommendation.NO_HIRE,
+    );
     expect(result.interviewerDecision.overridesAiSummary).toBe(true);
   });
 

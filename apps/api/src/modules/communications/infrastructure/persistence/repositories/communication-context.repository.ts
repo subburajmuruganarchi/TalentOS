@@ -5,7 +5,10 @@ import {
   Candidate,
   CandidateDocument,
 } from '../../../../candidates/infrastructure/persistence/schemas/candidate.schema';
-import { Job, JobDocument } from '../../../../jobs/infrastructure/persistence/schemas/job.schema';
+import {
+  Job,
+  JobDocument,
+} from '../../../../jobs/infrastructure/persistence/schemas/job.schema';
 
 export interface CommunicationContext {
   job: JobDocument;
@@ -16,10 +19,15 @@ export interface CommunicationContext {
 export class CommunicationContextRepository {
   constructor(
     @InjectModel(Job.name) private readonly jobModel: Model<JobDocument>,
-    @InjectModel(Candidate.name) private readonly candidateModel: Model<CandidateDocument>,
+    @InjectModel(Candidate.name)
+    private readonly candidateModel: Model<CandidateDocument>,
   ) {}
 
-  async load(organizationId: string, jobId: string, candidateId: string): Promise<CommunicationContext> {
+  async load(
+    organizationId: string,
+    jobId: string,
+    candidateId: string,
+  ): Promise<CommunicationContext> {
     const job = await this.jobModel
       .findOne({
         _id: new Types.ObjectId(jobId),

@@ -3,7 +3,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { CommunicationStatus } from '../../../domain/enums/communication-status.enum';
 import { CommunicationType } from '../../../domain/enums/communication-type.enum';
-import { Communication, CommunicationDocument } from '../schemas/communication.schema';
+import {
+  Communication,
+  CommunicationDocument,
+} from '../schemas/communication.schema';
 
 export interface ListCommunicationsFilter {
   organizationId: string;
@@ -24,7 +27,10 @@ export class CommunicationRepository {
     return this.communicationModel.create(data);
   }
 
-  findById(organizationId: string, id: string): Promise<CommunicationDocument | null> {
+  findById(
+    organizationId: string,
+    id: string,
+  ): Promise<CommunicationDocument | null> {
     return this.communicationModel
       .findOne({
         _id: new Types.ObjectId(id),

@@ -1,12 +1,18 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { Candidate, CandidateDocument } from '../../../../candidates/infrastructure/persistence/schemas/candidate.schema';
+import {
+  Candidate,
+  CandidateDocument,
+} from '../../../../candidates/infrastructure/persistence/schemas/candidate.schema';
 import {
   JobDescription,
   JobDescriptionDocument,
 } from '../../../../jobs/infrastructure/persistence/schemas/job-description.schema';
-import { Job, JobDocument } from '../../../../jobs/infrastructure/persistence/schemas/job.schema';
+import {
+  Job,
+  JobDocument,
+} from '../../../../jobs/infrastructure/persistence/schemas/job.schema';
 
 export interface MatchContext {
   job: JobDocument;
@@ -20,10 +26,15 @@ export class MatchContextRepository {
     @InjectModel(Job.name) private readonly jobModel: Model<JobDocument>,
     @InjectModel(JobDescription.name)
     private readonly jobDescriptionModel: Model<JobDescriptionDocument>,
-    @InjectModel(Candidate.name) private readonly candidateModel: Model<CandidateDocument>,
+    @InjectModel(Candidate.name)
+    private readonly candidateModel: Model<CandidateDocument>,
   ) {}
 
-  async load(organizationId: string, jobId: string, candidateId: string): Promise<MatchContext> {
+  async load(
+    organizationId: string,
+    jobId: string,
+    candidateId: string,
+  ): Promise<MatchContext> {
     const job = await this.jobModel
       .findOne({
         _id: new Types.ObjectId(jobId),
@@ -72,7 +83,9 @@ export class MatchContextRepository {
     }
 
     if (!jobDescription) {
-      throw new NotFoundException('Active job description not found for this job');
+      throw new NotFoundException(
+        'Active job description not found for this job',
+      );
     }
 
     return { job, jobDescription, candidate };

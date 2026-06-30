@@ -36,8 +36,13 @@ export interface AiCommunicationDraftResponse {
 export class AiCommunicationClient {
   constructor(private readonly configService: ConfigService) {}
 
-  async generateDraft(payload: AiCommunicationDraftPayload): Promise<AiCommunicationDraftResponse> {
-    const baseUrl = this.configService.get<string>('AI_SERVICE_URL', 'http://localhost:8000');
+  async generateDraft(
+    payload: AiCommunicationDraftPayload,
+  ): Promise<AiCommunicationDraftResponse> {
+    const baseUrl = this.configService.get<string>(
+      'AI_SERVICE_URL',
+      'http://localhost:8000',
+    );
     const url = `${baseUrl.replace(/\/$/, '')}/api/v1/communications/draft`;
 
     const response = await fetch(url, {

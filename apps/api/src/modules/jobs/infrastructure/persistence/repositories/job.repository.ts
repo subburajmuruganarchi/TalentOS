@@ -6,7 +6,9 @@ import { Job, JobDocument } from '../schemas/job.schema';
 
 @Injectable()
 export class JobRepository {
-  constructor(@InjectModel(Job.name) private readonly jobModel: Model<JobDocument>) {}
+  constructor(
+    @InjectModel(Job.name) private readonly jobModel: Model<JobDocument>,
+  ) {}
 
   create(data: Partial<Job>): Promise<JobDocument> {
     return this.jobModel.create(data);

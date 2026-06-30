@@ -28,7 +28,8 @@ export class OrganizationMember {
   isDeleted!: boolean;
 }
 
-export const OrganizationMemberSchema = SchemaFactory.createForClass(OrganizationMember);
+export const OrganizationMemberSchema =
+  SchemaFactory.createForClass(OrganizationMember);
 
 OrganizationMemberSchema.index(
   { organizationId: 1, userId: 1 },

@@ -7,7 +7,11 @@ export type JobDescriptionDocument = HydratedDocument<JobDescription>;
 
 @Schema({ _id: false })
 export class JobDescriptionSource {
-  @Prop({ type: String, required: true, enum: Object.values(JobDescriptionSourceType) })
+  @Prop({
+    type: String,
+    required: true,
+    enum: Object.values(JobDescriptionSourceType),
+  })
   type!: JobDescriptionSourceType;
 
   @Prop({ type: Types.ObjectId, default: null })
@@ -94,9 +98,15 @@ export class JobDescription {
   updatedAt?: Date;
 }
 
-export const JobDescriptionSchema = SchemaFactory.createForClass(JobDescription);
+export const JobDescriptionSchema =
+  SchemaFactory.createForClass(JobDescription);
 
-JobDescriptionSchema.index({ organizationId: 1, jobId: 1, isDeleted: 1, version: -1 });
+JobDescriptionSchema.index({
+  organizationId: 1,
+  jobId: 1,
+  isDeleted: 1,
+  version: -1,
+});
 JobDescriptionSchema.index(
   { organizationId: 1, jobId: 1, isActive: 1 },
   { partialFilterExpression: { isActive: true, isDeleted: false } },

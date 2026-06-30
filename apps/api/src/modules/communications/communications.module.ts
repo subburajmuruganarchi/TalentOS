@@ -5,7 +5,10 @@ import {
   Candidate,
   CandidateSchema,
 } from '../candidates/infrastructure/persistence/schemas/candidate.schema';
-import { Job, JobSchema } from '../jobs/infrastructure/persistence/schemas/job.schema';
+import {
+  Job,
+  JobSchema,
+} from '../jobs/infrastructure/persistence/schemas/job.schema';
 import { CommunicationsService } from './application/communications.service';
 import { AiCommunicationClient } from './infrastructure/ai/ai-communication.client';
 import { EMAIL_SENDER } from './infrastructure/email/email-sender.interface';

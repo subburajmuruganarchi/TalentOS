@@ -6,7 +6,10 @@ import { RoleEntity, RoleDocument } from '../schemas/role.schema';
 
 @Injectable()
 export class RoleRepository {
-  constructor(@InjectModel(RoleEntity.name) private readonly roleModel: Model<RoleDocument>) {}
+  constructor(
+    @InjectModel(RoleEntity.name)
+    private readonly roleModel: Model<RoleDocument>,
+  ) {}
 
   upsertSystemRole(
     code: Role,
@@ -30,7 +33,7 @@ export class RoleRepository {
         },
         { upsert: true, new: true },
       )
-      .exec() as Promise<RoleDocument>;
+      .exec();
   }
 
   findSystemRole(code: Role): Promise<RoleDocument | null> {

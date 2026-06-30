@@ -1,4 +1,8 @@
-import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { Types } from 'mongoose';
 import type { AuthenticatedUser } from '../../auth/domain/interfaces/authenticated-user.interface';
 import { MatchRecommendation } from '../domain/enums/match-recommendation.enum';
@@ -16,15 +20,24 @@ export class MatchingService {
 
   async runMatch(user: AuthenticatedUser, jobId: string, candidateId: string) {
     const organizationId = this.requireOrganizationId(user);
-    const context = await this.matchContextRepository.load(organizationId, jobId, candidateId);
+    const context = await this.matchContextRepository.load(
+      organizationId,
+      jobId,
+      candidateId,
+    );
 
-    if (!context.jobDescription.rawText && !context.jobDescription.structuredMetadata) {
+    if (
+      !context.jobDescription.rawText &&
+      !context.jobDescription.structuredMetadata
+    ) {
       throw new BadRequestException(
         'Job description must be processed before matching. Upload and extract JD first.',
       );
     }
 
-    const candidateProfile = this.buildCandidateProfilePayload(context.candidate);
+    const candidateProfile = this.buildCandidateProfilePayload(
+      context.candidate,
+    );
 
     const aiResult = await this.aiMatchingClient.match({
       organization_id: organizationId,
@@ -73,7 +86,11 @@ export class MatchingService {
     return this.toMatchResponse(saved);
   }
 
-  async getLatestMatch(user: AuthenticatedUser, jobId: string, candidateId: string) {
+  async getLatestMatch(
+    user: AuthenticatedUser,
+    jobId: string,
+    candidateId: string,
+  ) {
     const organizationId = this.requireOrganizationId(user);
     const match = await this.candidateMatchRepository.findLatest(
       organizationId,
@@ -82,7 +99,9 @@ export class MatchingService {
     );
 
     if (!match) {
-      throw new BadRequestException('No match result found for this job and candidate');
+      throw new BadRequestException(
+        'No match result found for this job and candidate',
+      );
     }
 
     return this.toMatchResponse(match);
@@ -95,7 +114,11 @@ export class MatchingService {
     profile: {
       summary?: string | null;
       totalExperienceYears?: number | null;
-      skills: Array<{ name: string; proficiency?: string | null; years?: number | null }>;
+      skills: Array<{
+        name: string;
+        proficiency?: string | null;
+        years?: number | null;
+      }>;
       experience: Array<{
         company: string;
         role: string;

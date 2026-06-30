@@ -50,7 +50,9 @@ describe('JobsService', () => {
   };
 
   const aiProcessor = {
-    queueExtraction: jest.fn().mockResolvedValue({ processingJobId: 'job-123' }),
+    queueExtraction: jest
+      .fn()
+      .mockResolvedValue({ processingJobId: 'job-123' }),
   };
 
   beforeEach(async () => {
@@ -58,7 +60,10 @@ describe('JobsService', () => {
       providers: [
         JobsService,
         { provide: JobRepository, useValue: jobRepository },
-        { provide: JobDescriptionRepository, useValue: jobDescriptionRepository },
+        {
+          provide: JobDescriptionRepository,
+          useValue: jobDescriptionRepository,
+        },
         { provide: DocumentRepository, useValue: documentRepository },
         { provide: LocalDocumentStorage, useValue: localDocumentStorage },
         { provide: JOB_DESCRIPTION_AI_PROCESSOR, useValue: aiProcessor },
@@ -112,9 +117,15 @@ describe('JobsService', () => {
     const jobDescriptionId = new Types.ObjectId();
     const documentId = new Types.ObjectId();
 
-    jobRepository.findById.mockResolvedValue({ _id: jobId, title: 'Role', status: JobStatus.DRAFT });
+    jobRepository.findById.mockResolvedValue({
+      _id: jobId,
+      title: 'Role',
+      status: JobStatus.DRAFT,
+    });
     jobDescriptionRepository.getNextVersion.mockResolvedValue(1);
-    jobDescriptionRepository.deactivateActiveVersions.mockResolvedValue(undefined);
+    jobDescriptionRepository.deactivateActiveVersions.mockResolvedValue(
+      undefined,
+    );
     jobDescriptionRepository.create.mockResolvedValue({
       _id: jobDescriptionId,
       jobId,

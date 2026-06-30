@@ -31,7 +31,10 @@ export class LocalDocumentStorage {
   }
 
   async save(input: StoredDocumentInput): Promise<StoredDocumentResult> {
-    const safeFilename = input.originalFilename.replace(/[^a-zA-Z0-9._-]/g, '_');
+    const safeFilename = input.originalFilename.replace(
+      /[^a-zA-Z0-9._-]/g,
+      '_',
+    );
     const relativePath = join(
       input.organizationId,
       'jobs',
@@ -41,9 +44,18 @@ export class LocalDocumentStorage {
     );
     const absolutePath = join(this.uploadRoot, relativePath);
 
-    await mkdir(join(this.uploadRoot, input.organizationId, 'jobs', input.jobId, input.jobDescriptionId), {
-      recursive: true,
-    });
+    await mkdir(
+      join(
+        this.uploadRoot,
+        input.organizationId,
+        'jobs',
+        input.jobId,
+        input.jobDescriptionId,
+      ),
+      {
+        recursive: true,
+      },
+    );
     await writeFile(absolutePath, input.buffer);
 
     const checksum = createHash('sha256').update(input.buffer).digest('hex');

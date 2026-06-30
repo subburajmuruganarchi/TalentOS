@@ -3,7 +3,11 @@ import { Role } from '../enums/role.enum';
 
 export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
   [Role.SUPER_ADMIN]: Object.values(Permission),
-  [Role.CEO]: [Permission.ANALYTICS_READ, Permission.JOBS_READ, Permission.CANDIDATES_READ],
+  [Role.CEO]: [
+    Permission.ANALYTICS_READ,
+    Permission.JOBS_READ,
+    Permission.CANDIDATES_READ,
+  ],
   [Role.HR_ADMIN]: [
     Permission.ORG_MANAGE,
     Permission.USERS_MANAGE,

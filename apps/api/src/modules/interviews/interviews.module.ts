@@ -9,12 +9,18 @@ import {
   JobDescription,
   JobDescriptionSchema,
 } from '../jobs/infrastructure/persistence/schemas/job-description.schema';
-import { Job, JobSchema } from '../jobs/infrastructure/persistence/schemas/job.schema';
+import {
+  Job,
+  JobSchema,
+} from '../jobs/infrastructure/persistence/schemas/job.schema';
 import { InterviewsService } from './application/interviews.service';
 import { AiInterviewClient } from './infrastructure/ai/ai-interview.client';
 import { InterviewContextRepository } from './infrastructure/persistence/repositories/interview-context.repository';
 import { InterviewRepository } from './infrastructure/persistence/repositories/interview.repository';
-import { Interview, InterviewSchema } from './infrastructure/persistence/schemas/interview.schema';
+import {
+  Interview,
+  InterviewSchema,
+} from './infrastructure/persistence/schemas/interview.schema';
 import { InterviewsController } from './presentation/interviews.controller';
 
 @Module({

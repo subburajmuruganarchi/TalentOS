@@ -68,7 +68,10 @@ describe('CommunicationsService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CommunicationsService,
-        { provide: CommunicationContextRepository, useValue: communicationContextRepository },
+        {
+          provide: CommunicationContextRepository,
+          useValue: communicationContextRepository,
+        },
         { provide: CommunicationRepository, useValue: communicationRepository },
         { provide: AiCommunicationClient, useValue: aiCommunicationClient },
         { provide: EMAIL_SENDER, useValue: emailSender },
@@ -81,9 +84,14 @@ describe('CommunicationsService', () => {
 
   it('requires organization context', async () => {
     await expect(
-      service.generateDraft({ ...user, organizationId: undefined }, jobId, candidateId, {
-        type: CommunicationType.SHORTLIST,
-      }),
+      service.generateDraft(
+        { ...user, organizationId: undefined },
+        jobId,
+        candidateId,
+        {
+          type: CommunicationType.SHORTLIST,
+        },
+      ),
     ).rejects.toThrow(ForbiddenException);
   });
 
@@ -120,9 +128,9 @@ describe('CommunicationsService', () => {
       status: CommunicationStatus.DRAFT,
     });
 
-    await expect(service.send(user, communicationId.toString())).rejects.toThrow(
-      BadRequestException,
-    );
+    await expect(
+      service.send(user, communicationId.toString()),
+    ).rejects.toThrow(BadRequestException);
     expect(emailSender.send).not.toHaveBeenCalled();
   });
 
@@ -135,7 +143,11 @@ describe('CommunicationsService', () => {
     communicationRepository.update.mockResolvedValue({
       ...baseCommunication,
       status: CommunicationStatus.SENT,
-      delivery: { sentAt: new Date(), sentBy: new Types.ObjectId(userId), messageId: 'msg-123' },
+      delivery: {
+        sentAt: new Date(),
+        sentBy: new Types.ObjectId(userId),
+        messageId: 'msg-123',
+      },
     });
 
     const result = await service.send(user, communicationId.toString());
@@ -148,7 +160,10 @@ describe('CommunicationsService', () => {
 
   it('moves draft through approval workflow', async () => {
     communicationRepository.findById
-      .mockResolvedValueOnce({ ...baseCommunication, status: CommunicationStatus.DRAFT })
+      .mockResolvedValueOnce({
+        ...baseCommunication,
+        status: CommunicationStatus.DRAFT,
+      })
       .mockResolvedValueOnce({
         ...baseCommunication,
         status: CommunicationStatus.PENDING_APPROVAL,
@@ -163,10 +178,17 @@ describe('CommunicationsService', () => {
         status: CommunicationStatus.APPROVED,
       });
 
-    const pending = await service.requestApproval(user, communicationId.toString());
+    const pending = await service.requestApproval(
+      user,
+      communicationId.toString(),
+    );
     expect(pending.status).toBe(CommunicationStatus.PENDING_APPROVAL);
 
-    const approved = await service.approve(user, communicationId.toString(), {});
+    const approved = await service.approve(
+      user,
+      communicationId.toString(),
+      {},
+    );
     expect(approved.status).toBe(CommunicationStatus.APPROVED);
   });
 });

@@ -8,7 +8,10 @@ import {
 import { randomUUID } from 'crypto';
 import { Types } from 'mongoose';
 import type { AuthenticatedUser } from '../../auth/domain/interfaces/authenticated-user.interface';
-import { CandidateSource, CandidateStatus } from '../domain/enums/candidate-status.enum';
+import {
+  CandidateSource,
+  CandidateStatus,
+} from '../domain/enums/candidate-status.enum';
 import { ResumeParseStatus } from '../domain/enums/resume-parse-status.enum';
 import {
   ALLOWED_RESUME_MIME_TYPES,
@@ -83,7 +86,9 @@ export class CandidatesService {
 
   async listCandidates(user: AuthenticatedUser, status?: CandidateStatus) {
     const organizationId = this.requireOrganizationId(user);
-    const candidates = await this.candidateRepository.findAll(organizationId, { status });
+    const candidates = await this.candidateRepository.findAll(organizationId, {
+      status,
+    });
 
     return Promise.all(
       candidates.map(async (candidate) => {
@@ -98,26 +103,43 @@ export class CandidatesService {
 
   async getCandidate(user: AuthenticatedUser, candidateId: string) {
     const organizationId = this.requireOrganizationId(user);
-    const candidate = await this.findCandidateOrThrow(organizationId, candidateId);
-    const resumes = await this.resumeRepository.findByCandidate(organizationId, candidateId);
+    const candidate = await this.findCandidateOrThrow(
+      organizationId,
+      candidateId,
+    );
+    const resumes = await this.resumeRepository.findByCandidate(
+      organizationId,
+      candidateId,
+    );
     return this.toCandidateResponse(candidate, resumes);
   }
 
-  async updateCandidate(user: AuthenticatedUser, candidateId: string, dto: UpdateCandidateDto) {
+  async updateCandidate(
+    user: AuthenticatedUser,
+    candidateId: string,
+    dto: UpdateCandidateDto,
+  ) {
     const organizationId = this.requireOrganizationId(user);
     await this.findCandidateOrThrow(organizationId, candidateId);
 
-    const updated = await this.candidateRepository.update(organizationId, candidateId, {
-      ...dto,
-      ...(dto.email ? { email: dto.email.toLowerCase() } : {}),
-      updatedBy: new Types.ObjectId(user.userId),
-    });
+    const updated = await this.candidateRepository.update(
+      organizationId,
+      candidateId,
+      {
+        ...dto,
+        ...(dto.email ? { email: dto.email.toLowerCase() } : {}),
+        updatedBy: new Types.ObjectId(user.userId),
+      },
+    );
 
     if (!updated) {
       throw new NotFoundException('Candidate not found');
     }
 
-    const resumes = await this.resumeRepository.findByCandidate(organizationId, candidateId);
+    const resumes = await this.resumeRepository.findByCandidate(
+      organizationId,
+      candidateId,
+    );
     return this.toCandidateResponse(updated, resumes);
   }
 
@@ -132,7 +154,9 @@ export class CandidatesService {
 
     const results: ResumeUploadResult[] = [];
     for (const file of files) {
-      results.push(await this.processResumeUpload(user, organizationId, candidateId, file));
+      results.push(
+        await this.processResumeUpload(user, organizationId, candidateId, file),
+      );
     }
 
     return results;
@@ -148,7 +172,11 @@ export class CandidatesService {
     const results: ResumeUploadResult[] = [];
 
     for (const file of files) {
-      const candidate = await this.createCandidateFromResumeFilename(user, organizationId, file);
+      const candidate = await this.createCandidateFromResumeFilename(
+        user,
+        organizationId,
+        file,
+      );
       const uploadResult = await this.processResumeUpload(
         user,
         organizationId,
@@ -164,7 +192,10 @@ export class CandidatesService {
   async listResumes(user: AuthenticatedUser, candidateId: string) {
     const organizationId = this.requireOrganizationId(user);
     await this.findCandidateOrThrow(organizationId, candidateId);
-    const resumes = await this.resumeRepository.findByCandidate(organizationId, candidateId);
+    const resumes = await this.resumeRepository.findByCandidate(
+      organizationId,
+      candidateId,
+    );
 
     return Promise.all(
       resumes.map(async (resume) => {
@@ -185,7 +216,10 @@ export class CandidatesService {
   ): Promise<ResumeUploadResult> {
     const actorId = new Types.ObjectId(user.userId);
     const resumeId = new Types.ObjectId();
-    const version = await this.resumeRepository.getNextVersion(organizationId, candidateId);
+    const version = await this.resumeRepository.getNextVersion(
+      organizationId,
+      candidateId,
+    );
     await this.resumeRepository.deactivatePrimary(organizationId, candidateId);
 
     const stored = await this.resumeFileStorage.save({
@@ -253,7 +287,10 @@ export class CandidatesService {
       actorId,
     );
 
-    const candidate = await this.findCandidateOrThrow(organizationId, candidateId);
+    const candidate = await this.findCandidateOrThrow(
+      organizationId,
+      candidateId,
+    );
 
     return {
       candidate: this.toCandidateResponse(candidate, [resume]),
@@ -267,7 +304,10 @@ export class CandidatesService {
     file: Express.Multer.File,
   ) {
     const actorId = new Types.ObjectId(user.userId);
-    const baseName = file.originalname.replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' ').trim();
+    const baseName = file.originalname
+      .replace(/\.[^.]+$/, '')
+      .replace(/[_-]+/g, ' ')
+      .trim();
     const placeholderEmail = `pending-${randomUUID()}@talentos.local`;
 
     return this.candidateRepository.create({
@@ -307,15 +347,21 @@ export class CandidatesService {
     }
 
     if (files.length > MAX_BULK_FILES) {
-      throw new BadRequestException(`Maximum ${MAX_BULK_FILES} files allowed per upload`);
+      throw new BadRequestException(
+        `Maximum ${MAX_BULK_FILES} files allowed per upload`,
+      );
     }
 
     for (const file of files) {
       if (file.size > MAX_FILE_SIZE_BYTES) {
-        throw new BadRequestException(`File ${file.originalname} exceeds maximum size of 10MB`);
+        throw new BadRequestException(
+          `File ${file.originalname} exceeds maximum size of 10MB`,
+        );
       }
 
-      if (!ALLOWED_RESUME_MIME_TYPES.includes(file.mimetype as ResumeMimeType)) {
+      if (
+        !ALLOWED_RESUME_MIME_TYPES.includes(file.mimetype as ResumeMimeType)
+      ) {
         throw new BadRequestException(
           `File ${file.originalname}: unsupported type. Allowed: PDF, DOC, DOCX`,
         );
@@ -330,8 +376,14 @@ export class CandidatesService {
     return user.organizationId;
   }
 
-  private async findCandidateOrThrow(organizationId: string, candidateId: string) {
-    const candidate = await this.candidateRepository.findById(organizationId, candidateId);
+  private async findCandidateOrThrow(
+    organizationId: string,
+    candidateId: string,
+  ) {
+    const candidate = await this.candidateRepository.findById(
+      organizationId,
+      candidateId,
+    );
     if (!candidate) {
       throw new NotFoundException('Candidate not found');
     }

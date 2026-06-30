@@ -13,7 +13,7 @@ import {
 export class NoopJobDescriptionAiProcessor implements JobDescriptionAiProcessor {
   private readonly logger = new Logger(NoopJobDescriptionAiProcessor.name);
 
-  async queueExtraction(
+  queueExtraction(
     request: JobDescriptionAiQueueRequest,
   ): Promise<JobDescriptionAiQueueResult> {
     const processingJobId = randomUUID();
@@ -24,6 +24,6 @@ export class NoopJobDescriptionAiProcessor implements JobDescriptionAiProcessor 
         `sourceType=${request.sourceType}`,
     );
 
-    return { processingJobId };
+    return Promise.resolve({ processingJobId });
   }
 }

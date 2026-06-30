@@ -55,7 +55,11 @@ export interface AiTranscriptAnalyzeResponse {
     strengths: string[];
     concerns: string[];
     skill_signals: string[];
-    question_responses: Array<{ topic: string; summary: string; evidence: string | null }>;
+    question_responses: Array<{
+      topic: string;
+      summary: string;
+      evidence: string | null;
+    }>;
     suggested_follow_ups: string[];
     ai_recommendation: string;
     rationale: string;
@@ -74,12 +78,17 @@ export class AiInterviewClient {
     return this.post('/api/v1/interviews/questions/generate', payload);
   }
 
-  async analyzeTranscript(payload: AiTranscriptAnalyzePayload): Promise<AiTranscriptAnalyzeResponse> {
+  async analyzeTranscript(
+    payload: AiTranscriptAnalyzePayload,
+  ): Promise<AiTranscriptAnalyzeResponse> {
     return this.post('/api/v1/interviews/transcript/analyze', payload);
   }
 
   private async post<T>(path: string, payload: unknown): Promise<T> {
-    const baseUrl = this.configService.get<string>('AI_SERVICE_URL', 'http://localhost:8000');
+    const baseUrl = this.configService.get<string>(
+      'AI_SERVICE_URL',
+      'http://localhost:8000',
+    );
     const url = `${baseUrl.replace(/\/$/, '')}${path}`;
 
     const response = await fetch(url, {

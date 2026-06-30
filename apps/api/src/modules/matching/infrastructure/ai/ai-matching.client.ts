@@ -40,7 +40,10 @@ export class AiMatchingClient {
   constructor(private readonly configService: ConfigService) {}
 
   async match(payload: AiMatchRequestPayload): Promise<AiMatchResponsePayload> {
-    const baseUrl = this.configService.get<string>('AI_SERVICE_URL', 'http://localhost:8000');
+    const baseUrl = this.configService.get<string>(
+      'AI_SERVICE_URL',
+      'http://localhost:8000',
+    );
     const url = `${baseUrl.replace(/\/$/, '')}/api/v1/matching/match`;
 
     const response = await fetch(url, {

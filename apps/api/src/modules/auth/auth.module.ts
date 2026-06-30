@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
@@ -24,8 +29,14 @@ import {
   PermissionEntity,
   PermissionSchema,
 } from './infrastructure/persistence/schemas/permission.schema';
-import { RoleEntity, RoleSchema } from './infrastructure/persistence/schemas/role.schema';
-import { User, UserSchema } from './infrastructure/persistence/schemas/user.schema';
+import {
+  RoleEntity,
+  RoleSchema,
+} from './infrastructure/persistence/schemas/role.schema';
+import {
+  User,
+  UserSchema,
+} from './infrastructure/persistence/schemas/user.schema';
 import { AuthController } from './presentation/auth.controller';
 import { JwtAuthGuard } from './presentation/guards/jwt-auth.guard';
 import { PermissionsGuard } from './presentation/guards/permissions.guard';
@@ -41,7 +52,10 @@ import { PermissionsMiddleware } from './presentation/middleware/permissions.mid
       useFactory: (config: ConfigService) => ({
         secret: config.get<string>('JWT_SECRET', 'change-me'),
         signOptions: {
-          expiresIn: config.get<string>('JWT_ACCESS_EXPIRES_IN', '15m') as `${number}${'s' | 'm' | 'h' | 'd'}`,
+          expiresIn: config.get<string>(
+            'JWT_ACCESS_EXPIRES_IN',
+            '15m',
+          ) as `${number}${'s' | 'm' | 'h' | 'd'}`,
         },
       }),
     }),

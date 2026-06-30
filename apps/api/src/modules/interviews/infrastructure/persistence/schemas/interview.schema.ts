@@ -9,7 +9,11 @@ export type InterviewDocument = HydratedDocument<Interview>;
 
 @Schema({ _id: false })
 export class InterviewQuestion {
-  @Prop({ type: String, required: true, enum: Object.values(InterviewQuestionType) })
+  @Prop({
+    type: String,
+    required: true,
+    enum: Object.values(InterviewQuestionType),
+  })
   type!: InterviewQuestionType;
 
   @Prop({ type: String, required: true })
@@ -114,7 +118,11 @@ export class AiInterviewSummary {
   @Prop({ type: [String], default: [] })
   suggestedFollowUps!: string[];
 
-  @Prop({ type: String, required: true, enum: Object.values(AiInterviewRecommendation) })
+  @Prop({
+    type: String,
+    required: true,
+    enum: Object.values(AiInterviewRecommendation),
+  })
   aiRecommendation!: AiInterviewRecommendation;
 
   @Prop({ type: String, required: true })
@@ -216,7 +224,16 @@ export class Interview {
 
 export const InterviewSchema = SchemaFactory.createForClass(Interview);
 
-InterviewSchema.index(
-  { organizationId: 1, jobId: 1, candidateId: 1, isDeleted: 1, createdAt: -1 },
-);
-InterviewSchema.index({ organizationId: 1, interviewerId: 1, status: 1, isDeleted: 1 });
+InterviewSchema.index({
+  organizationId: 1,
+  jobId: 1,
+  candidateId: 1,
+  isDeleted: 1,
+  createdAt: -1,
+});
+InterviewSchema.index({
+  organizationId: 1,
+  interviewerId: 1,
+  status: 1,
+  isDeleted: 1,
+});

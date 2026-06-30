@@ -63,9 +63,15 @@ export class DocumentEntity {
   isDeleted!: boolean;
 }
 
-export const DocumentEntitySchema = SchemaFactory.createForClass(DocumentEntity);
+export const DocumentEntitySchema =
+  SchemaFactory.createForClass(DocumentEntity);
 
-DocumentEntitySchema.index({ organizationId: 1, entityType: 1, entityId: 1, isDeleted: 1 });
+DocumentEntitySchema.index({
+  organizationId: 1,
+  entityType: 1,
+  entityId: 1,
+  isDeleted: 1,
+});
 DocumentEntitySchema.index(
   { organizationId: 1, 'storage.path': 1 },
   { unique: true, partialFilterExpression: { isDeleted: false } },

@@ -34,7 +34,10 @@ export class CandidatesController {
 
   @Post()
   @RequirePermissions(Permission.CANDIDATES_WRITE)
-  createCandidate(@CurrentUser() user: AuthenticatedUser, @Body() dto: CreateCandidateDto) {
+  createCandidate(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: CreateCandidateDto,
+  ) {
     return this.candidatesService.createCandidate(user, dto);
   }
 
@@ -84,7 +87,11 @@ export class CandidatesController {
     @Param('candidateId') candidateId: string,
     @UploadedFiles() files: Express.Multer.File[],
   ) {
-    return this.candidatesService.uploadResumesToCandidate(user, candidateId, files);
+    return this.candidatesService.uploadResumesToCandidate(
+      user,
+      candidateId,
+      files,
+    );
   }
 
   @Get(':candidateId/resumes')

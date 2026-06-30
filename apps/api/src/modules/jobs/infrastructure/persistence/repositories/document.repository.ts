@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { DocumentEntity, DocumentEntityDocument } from '../schemas/document.schema';
+import {
+  DocumentEntity,
+  DocumentEntityDocument,
+} from '../schemas/document.schema';
 
 @Injectable()
 export class DocumentRepository {
@@ -14,7 +17,10 @@ export class DocumentRepository {
     return this.documentModel.create(data);
   }
 
-  findById(organizationId: string, documentId: string): Promise<DocumentEntityDocument | null> {
+  findById(
+    organizationId: string,
+    documentId: string,
+  ): Promise<DocumentEntityDocument | null> {
     return this.documentModel
       .findOne({
         _id: new Types.ObjectId(documentId),

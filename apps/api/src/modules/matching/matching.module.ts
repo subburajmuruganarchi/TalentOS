@@ -1,12 +1,18 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from '../auth/auth.module';
-import { Candidate, CandidateSchema } from '../candidates/infrastructure/persistence/schemas/candidate.schema';
+import {
+  Candidate,
+  CandidateSchema,
+} from '../candidates/infrastructure/persistence/schemas/candidate.schema';
 import {
   JobDescription,
   JobDescriptionSchema,
 } from '../jobs/infrastructure/persistence/schemas/job-description.schema';
-import { Job, JobSchema } from '../jobs/infrastructure/persistence/schemas/job.schema';
+import {
+  Job,
+  JobSchema,
+} from '../jobs/infrastructure/persistence/schemas/job.schema';
 import { MatchingService } from './application/matching.service';
 import { AiMatchingClient } from './infrastructure/ai/ai-matching.client';
 import { CandidateMatchRepository } from './infrastructure/persistence/repositories/candidate-match.repository';

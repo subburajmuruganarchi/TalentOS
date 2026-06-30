@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import type { AuthenticatedUser } from '../../auth/domain/interfaces/authenticated-user.interface';
 import { Permission } from '../../auth/domain/enums/permission.enum';
 import { Role } from '../../auth/domain/enums/role.enum';
@@ -28,12 +36,20 @@ export class InterviewsController {
     @Param('candidateId') candidateId: string,
     @Body() dto: CreateInterviewDto,
   ) {
-    return this.interviewsService.createInterview(user, jobId, candidateId, dto);
+    return this.interviewsService.createInterview(
+      user,
+      jobId,
+      candidateId,
+      dto,
+    );
   }
 
   @Get('interviews')
   @RequirePermissions(Permission.INTERVIEWS_READ)
-  list(@CurrentUser() user: AuthenticatedUser, @Query() query: ListInterviewsQueryDto) {
+  list(
+    @CurrentUser() user: AuthenticatedUser,
+    @Query() query: ListInterviewsQueryDto,
+  ) {
     return this.interviewsService.list(user, query);
   }
 
@@ -73,7 +89,10 @@ export class InterviewsController {
   }
 
   @Post('interviews/:id/summary/generate')
-  generateSummary(@CurrentUser() user: AuthenticatedUser, @Param('id') id: string) {
+  generateSummary(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('id') id: string,
+  ) {
     return this.interviewsService.generateSummary(user, id);
   }
 

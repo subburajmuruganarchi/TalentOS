@@ -15,7 +15,10 @@ import {
   JobDescription,
   JobDescriptionSchema,
 } from './infrastructure/persistence/schemas/job-description.schema';
-import { Job, JobSchema } from './infrastructure/persistence/schemas/job.schema';
+import {
+  Job,
+  JobSchema,
+} from './infrastructure/persistence/schemas/job.schema';
 import { LocalDocumentStorage } from './infrastructure/storage/local-document.storage';
 import { JobsController } from './presentation/jobs.controller';
 

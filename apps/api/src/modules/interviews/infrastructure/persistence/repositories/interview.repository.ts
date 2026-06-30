@@ -23,7 +23,10 @@ export class InterviewRepository {
     return this.interviewModel.create(data);
   }
 
-  findById(organizationId: string, id: string): Promise<InterviewDocument | null> {
+  findById(
+    organizationId: string,
+    id: string,
+  ): Promise<InterviewDocument | null> {
     return this.interviewModel
       .findOne({
         _id: new Types.ObjectId(id),

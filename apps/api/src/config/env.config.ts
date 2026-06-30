@@ -8,6 +8,7 @@ export const envConfig = {
   aiServiceUrl: process.env.AI_SERVICE_URL ?? 'http://localhost:8000',
   supabaseUrl: process.env.SUPABASE_URL ?? '',
   supabaseServiceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY ?? '',
-  supabaseStorageBucket: process.env.SUPABASE_STORAGE_BUCKET ?? 'talentos-files',
+  supabaseStorageBucket:
+    process.env.SUPABASE_STORAGE_BUCKET ?? 'talentos-files',
   corsOrigins: process.env.CORS_ORIGINS ?? 'http://localhost:3000',
 };

@@ -26,8 +26,13 @@ export interface AiFeedbackAnalyzeResponse {
 export class AiFeedbackClient {
   constructor(private readonly configService: ConfigService) {}
 
-  async analyze(payload: AiFeedbackAnalyzePayload): Promise<AiFeedbackAnalyzeResponse> {
-    const baseUrl = this.configService.get<string>('AI_SERVICE_URL', 'http://localhost:8000');
+  async analyze(
+    payload: AiFeedbackAnalyzePayload,
+  ): Promise<AiFeedbackAnalyzeResponse> {
+    const baseUrl = this.configService.get<string>(
+      'AI_SERVICE_URL',
+      'http://localhost:8000',
+    );
     const url = `${baseUrl.replace(/\/$/, '')}/api/v1/feedback/analyze`;
 
     const response = await fetch(url, {

@@ -33,7 +33,11 @@ export class MatchResultData {
   @Prop({ type: [String], default: [] })
   missingSkills!: string[];
 
-  @Prop({ type: String, required: true, enum: Object.values(MatchRecommendation) })
+  @Prop({
+    type: String,
+    required: true,
+    enum: Object.values(MatchRecommendation),
+  })
   recommendation!: MatchRecommendation;
 
   @Prop({ type: String, required: true })
@@ -48,7 +52,11 @@ export class HumanMatchReview {
   @Prop({ default: false })
   overridden!: boolean;
 
-  @Prop({ type: String, enum: Object.values(MatchRecommendation), default: null })
+  @Prop({
+    type: String,
+    enum: Object.values(MatchRecommendation),
+    default: null,
+  })
   recommendation!: MatchRecommendation | null;
 
   @Prop({ type: String, default: null })
@@ -106,11 +114,16 @@ export class CandidateMatch {
   updatedAt?: Date;
 }
 
-export const CandidateMatchSchema = SchemaFactory.createForClass(CandidateMatch);
+export const CandidateMatchSchema =
+  SchemaFactory.createForClass(CandidateMatch);
 
-CandidateMatchSchema.index(
-  { organizationId: 1, jobId: 1, candidateId: 1, isDeleted: 1, createdAt: -1 },
-);
+CandidateMatchSchema.index({
+  organizationId: 1,
+  jobId: 1,
+  candidateId: 1,
+  isDeleted: 1,
+  createdAt: -1,
+});
 CandidateMatchSchema.index(
   { organizationId: 1, jobId: 1, candidateId: 1 },
   { unique: true, partialFilterExpression: { isDeleted: false } },

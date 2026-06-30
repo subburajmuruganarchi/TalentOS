@@ -11,8 +11,14 @@ import {
   CandidateStoredFile,
   CandidateStoredFileSchema,
 } from './infrastructure/persistence/schemas/candidate-stored-file.schema';
-import { Candidate, CandidateSchema } from './infrastructure/persistence/schemas/candidate.schema';
-import { Resume, ResumeSchema } from './infrastructure/persistence/schemas/resume.schema';
+import {
+  Candidate,
+  CandidateSchema,
+} from './infrastructure/persistence/schemas/candidate.schema';
+import {
+  Resume,
+  ResumeSchema,
+} from './infrastructure/persistence/schemas/resume.schema';
 import { ResumeFileStorage } from './infrastructure/storage/resume-file.storage';
 import { CandidatesController } from './presentation/candidates.controller';
 

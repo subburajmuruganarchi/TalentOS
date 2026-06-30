@@ -1,5 +1,14 @@
-import { IsEmail, IsEnum, IsOptional, IsString, MinLength } from 'class-validator';
-import { CandidateSource, CandidateStatus } from '../../domain/enums/candidate-status.enum';
+import {
+  IsEmail,
+  IsEnum,
+  IsOptional,
+  IsString,
+  MinLength,
+} from 'class-validator';
+import {
+  CandidateSource,
+  CandidateStatus,
+} from '../../domain/enums/candidate-status.enum';
 
 export class UpdateCandidateDto {
   @IsOptional()

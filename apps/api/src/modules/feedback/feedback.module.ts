@@ -9,7 +9,10 @@ import {
   Interview,
   InterviewSchema,
 } from '../interviews/infrastructure/persistence/schemas/interview.schema';
-import { Job, JobSchema } from '../jobs/infrastructure/persistence/schemas/job.schema';
+import {
+  Job,
+  JobSchema,
+} from '../jobs/infrastructure/persistence/schemas/job.schema';
 import { FeedbackAnalysisService } from './application/feedback-analysis.service';
 import { AiFeedbackClient } from './infrastructure/ai/ai-feedback.client';
 import { FeedbackAnalysisRepository } from './infrastructure/persistence/repositories/feedback-analysis.repository';

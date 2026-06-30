@@ -13,7 +13,7 @@ import {
 export class NoopResumeAiProcessor implements ResumeAiProcessor {
   private readonly logger = new Logger(NoopResumeAiProcessor.name);
 
-  async queueParsing(request: ResumeAiQueueRequest): Promise<ResumeAiQueueResult> {
+  queueParsing(request: ResumeAiQueueRequest): Promise<ResumeAiQueueResult> {
     const processingJobId = randomUUID();
 
     this.logger.log(
@@ -21,6 +21,6 @@ export class NoopResumeAiProcessor implements ResumeAiProcessor {
         `candidateId=${request.candidateId} resumeId=${request.resumeId}`,
     );
 
-    return { processingJobId };
+    return Promise.resolve({ processingJobId });
   }
 }

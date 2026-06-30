@@ -36,13 +36,19 @@ export class JobsController {
 
   @Get()
   @RequirePermissions(Permission.JOBS_READ)
-  listJobs(@CurrentUser() user: AuthenticatedUser, @Query() query: ListJobsQueryDto) {
+  listJobs(
+    @CurrentUser() user: AuthenticatedUser,
+    @Query() query: ListJobsQueryDto,
+  ) {
     return this.jobsService.listJobs(user, query.status);
   }
 
   @Get(':jobId')
   @RequirePermissions(Permission.JOBS_READ)
-  getJob(@CurrentUser() user: AuthenticatedUser, @Param('jobId') jobId: string) {
+  getJob(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('jobId') jobId: string,
+  ) {
     return this.jobsService.getJob(user, jobId);
   }
 

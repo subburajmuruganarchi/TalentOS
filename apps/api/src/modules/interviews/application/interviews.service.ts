@@ -16,7 +16,10 @@ import {
 } from '../infrastructure/ai/ai-interview.client';
 import { InterviewContextRepository } from '../infrastructure/persistence/repositories/interview-context.repository';
 import { InterviewRepository } from '../infrastructure/persistence/repositories/interview.repository';
-import { InterviewDocument, InterviewQuestionPack } from '../infrastructure/persistence/schemas/interview.schema';
+import {
+  InterviewDocument,
+  InterviewQuestionPack,
+} from '../infrastructure/persistence/schemas/interview.schema';
 import {
   CreateInterviewDto,
   GenerateQuestionsDto,
@@ -41,14 +44,20 @@ export class InterviewsService {
     dto: CreateInterviewDto,
   ) {
     const organizationId = this.requireOrganizationId(user);
-    await this.interviewContextRepository.load(organizationId, jobId, candidateId);
+    await this.interviewContextRepository.load(
+      organizationId,
+      jobId,
+      candidateId,
+    );
 
     const actorId = new Types.ObjectId(user.userId);
     const saved = await this.interviewRepository.create({
       organizationId: new Types.ObjectId(organizationId),
       jobId: new Types.ObjectId(jobId),
       candidateId: new Types.ObjectId(candidateId),
-      interviewerId: dto.interviewerId ? new Types.ObjectId(dto.interviewerId) : null,
+      interviewerId: dto.interviewerId
+        ? new Types.ObjectId(dto.interviewerId)
+        : null,
       status: InterviewStatus.SCHEDULED,
       scheduledAt: dto.scheduledAt ? new Date(dto.scheduledAt) : null,
       durationMinutes: dto.durationMinutes ?? 60,
@@ -73,7 +82,10 @@ export class InterviewsService {
       interview.candidateId.toString(),
     );
 
-    if (!context.jobDescription.rawText && !context.jobDescription.structuredMetadata) {
+    if (
+      !context.jobDescription.rawText &&
+      !context.jobDescription.structuredMetadata
+    ) {
       throw new BadRequestException(
         'Job description must be processed before generating interview questions.',
       );
@@ -140,7 +152,9 @@ export class InterviewsService {
       interviewId,
       {
         questionPack: {
-          coding: dto.coding ? mapDtoQuestions(dto.coding) : interview.questionPack.coding,
+          coding: dto.coding
+            ? mapDtoQuestions(dto.coding)
+            : interview.questionPack.coding,
           technical: dto.technical
             ? mapDtoQuestions(dto.technical)
             : interview.questionPack.technical,
@@ -190,7 +204,9 @@ export class InterviewsService {
     this.assertCanContributeToInterview(user, interview);
 
     if (!interview.rawTranscript) {
-      throw new BadRequestException('Submit a transcript before generating a summary');
+      throw new BadRequestException(
+        'Submit a transcript before generating a summary',
+      );
     }
 
     const context = await this.interviewContextRepository.load(
@@ -215,10 +231,12 @@ export class InterviewsService {
       {
         processedTranscript: {
           cleanedText: aiResult.processed.cleaned_text,
-          speakerSegments: aiResult.processed.speaker_segments.map((segment) => ({
-            speaker: segment.speaker,
-            text: segment.text,
-          })),
+          speakerSegments: aiResult.processed.speaker_segments.map(
+            (segment) => ({
+              speaker: segment.speaker,
+              text: segment.text,
+            }),
+          ),
           keyTopics: aiResult.processed.key_topics,
           processedAt: new Date(),
         },
@@ -227,13 +245,16 @@ export class InterviewsService {
           strengths: aiResult.summary.strengths,
           concerns: aiResult.summary.concerns,
           skillSignals: aiResult.summary.skill_signals,
-          questionResponses: aiResult.summary.question_responses.map((item) => ({
-            topic: item.topic,
-            summary: item.summary,
-            evidence: item.evidence,
-          })),
+          questionResponses: aiResult.summary.question_responses.map(
+            (item) => ({
+              topic: item.topic,
+              summary: item.summary,
+              evidence: item.evidence,
+            }),
+          ),
           suggestedFollowUps: aiResult.summary.suggested_follow_ups,
-          aiRecommendation: aiResult.summary.ai_recommendation as AiInterviewRecommendation,
+          aiRecommendation: aiResult.summary
+            .ai_recommendation as AiInterviewRecommendation,
           rationale: aiResult.summary.rationale,
           llmModel: aiResult.model,
           generatedAt: new Date(),
@@ -249,7 +270,11 @@ export class InterviewsService {
     return this.toResponse(updated);
   }
 
-  async submitDecision(user: AuthenticatedUser, interviewId: string, dto: SubmitDecisionDto) {
+  async submitDecision(
+    user: AuthenticatedUser,
+    interviewId: string,
+    dto: SubmitDecisionDto,
+  ) {
     const interview = await this.findInterview(user, interviewId);
     this.assertCanContributeToInterview(user, interview);
 
@@ -296,7 +321,10 @@ export class InterviewsService {
 
   private async findInterview(user: AuthenticatedUser, interviewId: string) {
     const organizationId = this.requireOrganizationId(user);
-    const interview = await this.interviewRepository.findById(organizationId, interviewId);
+    const interview = await this.interviewRepository.findById(
+      organizationId,
+      interviewId,
+    );
 
     if (!interview) {
       throw new NotFoundException('Interview not found');
@@ -305,7 +333,10 @@ export class InterviewsService {
     return interview;
   }
 
-  private assertCanEditInterview(user: AuthenticatedUser, interview: InterviewDocument) {
+  private assertCanEditInterview(
+    user: AuthenticatedUser,
+    interview: InterviewDocument,
+  ) {
     if (user.permissions.includes(Permission.INTERVIEWS_WRITE)) {
       return;
     }
@@ -317,10 +348,15 @@ export class InterviewsService {
       return;
     }
 
-    throw new ForbiddenException('You cannot edit questions for this interview');
+    throw new ForbiddenException(
+      'You cannot edit questions for this interview',
+    );
   }
 
-  private assertCanContributeToInterview(user: AuthenticatedUser, interview: InterviewDocument) {
+  private assertCanContributeToInterview(
+    user: AuthenticatedUser,
+    interview: InterviewDocument,
+  ) {
     if (user.permissions.includes(Permission.INTERVIEWS_WRITE)) {
       return;
     }
@@ -336,7 +372,9 @@ export class InterviewsService {
       return;
     }
 
-    throw new ForbiddenException('Insufficient permissions for this interview action');
+    throw new ForbiddenException(
+      'Insufficient permissions for this interview action',
+    );
   }
 
   private assertPermission(user: AuthenticatedUser, permission: Permission) {
@@ -350,12 +388,16 @@ export class InterviewsService {
 
   private hasQuestions(pack: InterviewQuestionPack) {
     return (
-      pack.coding.length > 0 || pack.technical.length > 0 || pack.architecture.length > 0
+      pack.coding.length > 0 ||
+      pack.technical.length > 0 ||
+      pack.architecture.length > 0
     );
   }
 
   private mapQuestionsForAi(pack: InterviewQuestionPack) {
-    const mapQuestion = (question: InterviewQuestionPack['coding'][number]) => ({
+    const mapQuestion = (
+      question: InterviewQuestionPack['coding'][number],
+    ) => ({
       type: question.type,
       question: question.question,
       rationale: question.rationale,
@@ -401,7 +443,11 @@ export class InterviewsService {
     profile: {
       summary?: string | null;
       totalExperienceYears?: number | null;
-      skills: Array<{ name: string; proficiency?: string | null; years?: number | null }>;
+      skills: Array<{
+        name: string;
+        proficiency?: string | null;
+        years?: number | null;
+      }>;
       experience: Array<{
         company: string;
         role: string;

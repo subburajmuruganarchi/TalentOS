@@ -6,12 +6,17 @@ import { CurrentUser } from '../../auth/presentation/decorators/current-user.dec
 import { RequirePermissions } from '../../auth/presentation/decorators/permissions.decorator';
 import { Roles } from '../../auth/presentation/decorators/roles.decorator';
 import { FeedbackAnalysisService } from '../application/feedback-analysis.service';
-import { AnalyzeFeedbackDto, ListFeedbackAnalysesQueryDto } from './dto/feedback.dto';
+import {
+  AnalyzeFeedbackDto,
+  ListFeedbackAnalysesQueryDto,
+} from './dto/feedback.dto';
 
 @Controller()
 @Roles(Role.HR_ADMIN, Role.HR_EMPLOYEE, Role.INTERVIEWER)
 export class FeedbackController {
-  constructor(private readonly feedbackAnalysisService: FeedbackAnalysisService) {}
+  constructor(
+    private readonly feedbackAnalysisService: FeedbackAnalysisService,
+  ) {}
 
   @Post('interviews/:id/feedback/analyze')
   @RequirePermissions(Permission.FEEDBACK_WRITE)
@@ -20,18 +25,28 @@ export class FeedbackController {
     @Param('id') interviewId: string,
     @Body() dto: AnalyzeFeedbackDto,
   ) {
-    return this.feedbackAnalysisService.analyzeInterviewFeedback(user, interviewId, dto);
+    return this.feedbackAnalysisService.analyzeInterviewFeedback(
+      user,
+      interviewId,
+      dto,
+    );
   }
 
   @Get('interviews/:id/feedback/analysis')
   @RequirePermissions(Permission.INTERVIEWS_READ)
-  getByInterview(@CurrentUser() user: AuthenticatedUser, @Param('id') interviewId: string) {
+  getByInterview(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('id') interviewId: string,
+  ) {
     return this.feedbackAnalysisService.getByInterview(user, interviewId);
   }
 
   @Get('feedback/analyses')
   @RequirePermissions(Permission.INTERVIEWS_READ)
-  list(@CurrentUser() user: AuthenticatedUser, @Query() query: ListFeedbackAnalysesQueryDto) {
+  list(
+    @CurrentUser() user: AuthenticatedUser,
+    @Query() query: ListFeedbackAnalysesQueryDto,
+  ) {
     return this.feedbackAnalysisService.list(user, query);
   }
 
