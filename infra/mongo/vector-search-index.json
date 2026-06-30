@@ -1,0 +1,34 @@
+{
+  "name": "talentos_vector_index",
+  "type": "vectorSearch",
+  "definition": {
+    "fields": [
+      {
+        "type": "vector",
+        "path": "embedding",
+        "numDimensions": 1536,
+        "similarity": "cosine"
+      },
+      {
+        "type": "filter",
+        "path": "organization_id"
+      },
+      {
+        "type": "filter",
+        "path": "entity_type"
+      },
+      {
+        "type": "filter",
+        "path": "entity_id"
+      },
+      {
+        "type": "filter",
+        "path": "job_id"
+      },
+      {
+        "type": "filter",
+        "path": "candidate_id"
+      }
+    ]
+  }
+}

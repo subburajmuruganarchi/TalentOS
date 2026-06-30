@@ -1,0 +1,22 @@
+{
+  "name": "talentos",
+  "version": "0.1.0",
+  "private": true,
+  "description": "TalentOS — Human-in-the-loop AI Recruitment Assistant",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:web": "npm run dev --workspace=@talentos/web",
+    "dev:api": "npm run start:dev --workspace=@talentos/api",
+    "build:web": "npm run build --workspace=@talentos/web",
+    "build:api": "npm run build --workspace=@talentos/api",
+    "lint": "npm run lint --workspaces --if-present",
+    "docker:up": "docker compose -f infra/docker/docker-compose.yml up -d",
+    "docker:down": "docker compose -f infra/docker/docker-compose.yml down"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
