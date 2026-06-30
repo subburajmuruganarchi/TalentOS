@@ -1,0 +1,51 @@
+# TalentOS — Render Blueprint
+# Monorepo: Docker build context MUST be the repository root (not apps/api).
+
+services:
+  - type: web
+    name: talentos-api
+    runtime: docker
+    dockerfilePath: ./apps/api/Dockerfile
+    dockerContext: .
+    buildFilter:
+      paths:
+        - apps/api/**
+        - packages/shared-types/**
+        - package.json
+        - package-lock.json
+        - .npmrc
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: AI_SERVICE_URL
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
+
+  - type: web
+    name: talentos-ai
+    runtime: docker
+    dockerfilePath: ./apps/ai-service/Dockerfile
+    dockerContext: ./apps/ai-service
+    buildFilter:
+      paths:
+        - apps/ai-service/**
+    healthCheckPath: /health
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: DEBUG
+        value: "false"
+      - key: MONGODB_URI
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: API_INTERNAL_SECRET
+        generateValue: true

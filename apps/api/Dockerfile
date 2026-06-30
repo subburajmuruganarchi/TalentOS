@@ -1,10 +1,13 @@
 # TalentOS API — production image
+# Build from repository root:
+#   docker build -f apps/api/Dockerfile .
 
 FROM node:20-alpine AS builder
 
 WORKDIR /app
 
 COPY package*.json ./
+COPY .npmrc ./
 COPY apps/api/package*.json ./apps/api/
 COPY packages/shared-types/package*.json ./packages/shared-types/
 

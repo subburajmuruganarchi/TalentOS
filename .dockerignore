@@ -1,0 +1,36 @@
+# Git & IDE
+.git
+.github
+.cursor
+**/.vscode
+**/.idea
+
+# Dependencies (reinstalled in image)
+**/node_modules
+**/.pytest_cache
+**/__pycache__
+**/*.pyc
+**/.venv
+
+# Build outputs
+**/dist
+**/.next
+**/coverage
+
+# Local env & uploads
+**/.env
+**/.env.*
+!**/.env.example
+**/uploads
+
+# Docs & infra not needed for API image
+docs
+infra
+apps/web
+apps/ai-service
+
+# Tests
+**/test
+**/tests
+**/*.spec.ts
+**/*.e2e-spec.ts
